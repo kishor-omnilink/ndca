@@ -1,0 +1,17 @@
+"""
+NDCA application constants.
+"""
+
+APP_NAME = "NDCA"
+APP_VERSION = "0.1.0-dev"
+
+DEFAULT_HTTP_TIMEOUT = 60
+DEFAULT_COLLECTION_INTERVAL = 900
+
+SUPPORTED_PRODUCTS = (
+    "NFM-P",
+    "NFM-T",
+)
+
+LOG_FORMAT_JSON = "json"
+LOG_FORMAT_CONSOLE = "console"
