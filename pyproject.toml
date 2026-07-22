@@ -1,0 +1,94 @@
+[build-system]
+requires = ["setuptools>=69.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ndca"
+version = "0.1.0.dev1"
+description = "Nokia Data Collector Adapter"
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "Apache-2.0" }
+authors = [
+    { name = "Kishor Kumar Das" }
+]
+keywords = [
+    "nokia",
+    "nfmp",
+    "nfmt",
+    "network",
+    "telemetry",
+    "timescaledb",
+    "postgresql",
+    "grafana"
+]
+
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: POSIX :: Linux",
+    "License :: OSI Approved :: Apache Software License",
+]
+
+dependencies = [
+    "sqlalchemy>=2.0",
+    "alembic>=1.16",
+    "psycopg[binary]>=3.2",
+    "pydantic>=2.11",
+    "pydantic-settings>=2.10",
+    "httpx>=0.28",
+    "structlog>=25.4",
+    "apscheduler>=3.11",
+    "python-dotenv>=1.1",
+    "PyYAML>=6.0",
+    "orjson>=3.11",
+    "tenacity>=9.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.4",
+    "pytest-cov>=6.2",
+    "ruff>=0.12",
+    "black>=25.1",
+    "mypy>=1.17",
+    "pre-commit>=4.2",
+]
+
+[tool.black]
+line-length = 100
+target-version = ["py312"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = [
+    "E",
+    "F",
+    "I",
+    "UP",
+    "B",
+]
+
+[tool.pytest.ini_options]
+testpaths = [
+    "tests"
+]
+
+pythonpath = [
+    "src"
+]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+warn_unused_configs = true
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]

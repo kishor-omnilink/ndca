@@ -1,0 +1,58 @@
+# ------------------------------------------------------------
+# Python
+# ------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution
+build/
+dist/
+*.egg-info/
+
+# Virtual Environment
+venv/
+.venv/
+
+# Environment
+.env
+
+# IDE
+.vscode/
+.idea/
+
+# Testing
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# Type Checker
+.mypy_cache/
+
+# Ruff
+.ruff_cache/
+
+# Logs
+logs/
+*.log
+
+# Runtime
+runtime/
+*.pid
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Database
+*.sqlite3
+
+# Temporary
+*.tmp
+*.bak
+*.swp
+
+# Release
+releases/*.zip
+releases/*.tar.gz
