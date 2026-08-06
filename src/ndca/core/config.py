@@ -78,6 +78,14 @@ class Settings(BaseSettings):
         description="NSP RESTCONF API Base Path",
     )
 
+    # -------------------------------------------------------------------------
+    # Nokia NSP RESTCONF Endpoints
+    # -------------------------------------------------------------------------
+
+    nsp_network_element_endpoint: str = (
+        "/restconf/data/nsp-equipment:network/network-element"
+    )
+    
     # ==========================================================================
     # Legacy NFM-P (Reserved)
     # ==========================================================================
