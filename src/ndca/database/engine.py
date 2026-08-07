@@ -2,22 +2,22 @@
 Database engine configuration.
 """
 
-from sqlalchemy import create_engine, text
+from sqlalchemy import URL, create_engine, text
 from sqlalchemy.engine import Engine
 
 from ndca.core.config import settings
 
 
-def build_database_url() -> str:
-    """Build SQLAlchemy database URL from application settings."""
+def build_database_url() -> URL:
+    """Build a SQLAlchemy database URL safely."""
 
-    return (
-        f"postgresql+psycopg://"
-        f"{settings.db_user}:"
-        f"{settings.db_password}@"
-        f"{settings.db_host}:"
-        f"{settings.db_port}/"
-        f"{settings.db_name}"
+    return URL.create(
+        drivername="postgresql+psycopg",
+        username=settings.db_user,
+        password=settings.db_password,
+        host=settings.db_host,
+        port=settings.db_port,
+        database=settings.db_name,
     )
 
 
@@ -38,4 +38,5 @@ def database_health_check() -> bool:
 
     with engine.connect() as connection:
         connection.execute(text("SELECT 1"))
+
     return True
