@@ -107,6 +107,21 @@ class NetworkElementRepository(BaseRepository[NetworkElement]):
                 f"by name={name!r}: {ex}"
             ) from ex
 
+    def find_all(self) -> list[NetworkElement]:
+        """Return all Network Elements."""
+
+        statement = select(NetworkElement)
+
+        try:
+            return list(
+                self._session.scalars(statement).all()
+            )
+
+        except SQLAlchemyError as ex:
+            raise RepositoryQueryError(
+                "Failed to retrieve all Network Elements"
+            ) from ex
+
     def exists_by_ne_id(
         self,
         ne_id: str,

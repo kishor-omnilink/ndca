@@ -155,6 +155,34 @@ class TestNetworkElementRepository(unittest.TestCase):
 
         self.session.scalar.assert_called_once()
 
+    def test_find_all(self) -> None:
+        """find_all() should return all Network Elements."""
+
+        ne1 = NetworkElement(
+            component_id="172.26.0.8",
+            ne_id="172.26.0.8",
+            ne_name="OCAC-BHADRAK-AR01",
+        )
+
+        ne2 = NetworkElement(
+            component_id="172.26.0.9",
+            ne_id="172.26.0.9",
+            ne_name="OCAC-BHADRAK-AR02",
+        )
+
+        self.session.scalars.return_value.all.return_value = [
+            ne1,
+            ne2,
+        ]
+
+        result = self.repository.find_all()
+
+        self.session.scalars.assert_called_once()
+
+        self.assertEqual(
+            result,
+            [ne1, ne2],
+        )
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
