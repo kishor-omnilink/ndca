@@ -1,10 +1,14 @@
 """
-SYNC-002 - End-to-End Inventory Synchronization Service.
+SYNC-005 - Inventory Synchronization Orchestration.
 
-Orchestrates inventory collection, mapping, and persistence.
+Coordinates:
 
-SYNC-001 remains responsible for the database synchronization
-transaction and entity reconciliation.
+    NSP collection
+        -> InventorySnapshot
+        -> NetworkElement DTO
+        -> NetworkElement ORM
+        -> InventorySyncService
+        -> PostgreSQL
 """
 
 from __future__ import annotations
@@ -22,17 +26,12 @@ from ndca.services.inventory_sync_service import InventorySyncService
 class InventorySynchronizationService:
     """
     Orchestrate one complete Network Element synchronization run.
-
-    The service coordinates:
-
-        NSP collection
-            -> InventorySnapshot
-            -> Network Element mapping
-            -> SYNC-001 persistence synchronization
     """
 
     def __init__(self, session: Session) -> None:
-        """Initialize the end-to-end synchronization service."""
+        """
+        Initialize the synchronization orchestration service.
+        """
 
         self._snapshot_service = InventorySnapshotService()
         self._mapper = NetworkElementMapper()
@@ -40,12 +39,26 @@ class InventorySynchronizationService:
 
     def synchronize(self) -> SyncResult:
         """
-        Collect, map, and synchronize Network Elements.
+        Collect and synchronize the current NSP inventory.
+
+        Processing sequence:
+
+            NSP
+             ↓
+            Snapshot
+             ↓
+            DTO
+             ↓
+            ORM
+             ↓
+            InventorySyncService
+             ↓
+            PostgreSQL
 
         Returns
         -------
         SyncResult
-            Result returned by SYNC-001.
+            Result produced by InventorySyncService.
 
         Raises
         ------
@@ -56,9 +69,13 @@ class InventorySynchronizationService:
         try:
             snapshot = self._snapshot_service.collect()
 
-            discovered = self._mapper.map(snapshot)
+            discovered = self._mapper.map_to_models(
+                snapshot
+            )
 
-            return self._sync_service.synchronize(discovered)
+            return self._sync_service.synchronize(
+                discovered
+            )
 
         finally:
             self._snapshot_service.close()

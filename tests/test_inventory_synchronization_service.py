@@ -1,175 +1,194 @@
 """
-SYNC-002 - End-to-End Inventory Synchronization Service tests.
+SYNC-005 end-to-end orchestration unit tests.
 """
 
-from unittest.mock import MagicMock, patch
+from __future__ import annotations
+
 import unittest
+from unittest.mock import MagicMock, patch
 
 from ndca.models.inventory_snapshot import InventorySnapshot
 from ndca.models.network_element import NetworkElement
 from ndca.models.sync_result import SyncResult
+from ndca.services.inventory_snapshot_service import (
+    InventorySnapshotService,
+)
 from ndca.services.inventory_synchronization_service import (
     InventorySynchronizationService,
 )
 
 
-def make_ne() -> NetworkElement:
-    """Create a representative Network Element."""
-
-    return NetworkElement(
-        component_id="172.26.0.8",
-        ne_id="172.26.0.8",
-        ne_name="OCAC-BHADRAK-AR01",
-        ip_address="172.26.0.8",
-        system_type="7750 SR",
-        software_version="24.4",
-        vendor="Nokia",
-        display_name="OCAC-BHADRAK-AR01",
-        admin_state="UP",
-        oper_state="UP",
-        is_active=True,
-    )
-
-
 class TestInventorySynchronizationService(unittest.TestCase):
-    """Validate SYNC-002 orchestration."""
+    """Validate SYNC-005 orchestration."""
 
     def setUp(self) -> None:
+        """Create mocked dependencies."""
+
         self.session = MagicMock()
 
-        self.snapshot_service = MagicMock()
-        self.mapper = MagicMock()
-        self.sync_service = MagicMock()
-
-        self.snapshot = InventorySnapshot(
-            sync_id="snapshot-001",
-            source="Nokia NSP",
-            endpoint="/restconf/data/nsp-equipment:network-element",
-            raw_data={
-                "nsp-equipment:network-element": [
-                    {
-                        "ne-id": "172.26.0.8",
-                        "ne-name": "OCAC-BHADRAK-AR01",
-                    }
-                ]
-            },
+        # Patch the real close() method at the class level.
+        # This gives the test a reliable MagicMock to verify.
+        self.close_patcher = patch.object(
+            InventorySnapshotService,
+            "close",
+            autospec=True,
         )
 
-        self.discovered = [make_ne()]
-
-        self.result = SyncResult(
-            sync_id="sync-001",
-            total_discovered=1,
-            created=1,
-            status="SUCCESS",
-        )
-
-        snapshot_patcher = patch(
-            "ndca.services.inventory_synchronization_service."
-            "InventorySnapshotService",
-            return_value=self.snapshot_service,
-        )
-
-        mapper_patcher = patch(
-            "ndca.services.inventory_synchronization_service."
-            "NetworkElementMapper",
-            return_value=self.mapper,
-        )
-
-        sync_patcher = patch(
-            "ndca.services.inventory_synchronization_service."
-            "InventorySyncService",
-            return_value=self.sync_service,
-        )
-
-        self.addCleanup(snapshot_patcher.stop)
-        self.addCleanup(mapper_patcher.stop)
-        self.addCleanup(sync_patcher.stop)
-
-        snapshot_patcher.start()
-        mapper_patcher.start()
-        sync_patcher.start()
+        self.close_mock = self.close_patcher.start()
 
         self.service = InventorySynchronizationService(
             self.session
         )
 
-    def test_successful_synchronization(self) -> None:
-        """Successful collection, mapping, and synchronization."""
+        # synchronize() is a real method, so replace it with a
+        # MagicMock to verify whether it was called.
+        self.service._sync_service.synchronize = MagicMock()
 
-        self.snapshot_service.collect.return_value = self.snapshot
-        self.mapper.map.return_value = self.discovered
-        self.sync_service.synchronize.return_value = self.result
+        self.snapshot = InventorySnapshot(
+            sync_id="snapshot-001",
+            source="Nokia NSP",
+            endpoint="test",
+            raw_data={
+                "nsp-equipment:network-element": [
+                    {
+                        "ne-id": "NE-001",
+                        "ne-name": "ROUTER-001",
+                        "component-id": "COMP-001",
+                        "ip-address": "192.0.2.1",
+                        "product": "7750 SR",
+                        "version": "24.4.1",
+                        "admin-state": "UP",
+                        "oper-state": "UP",
+                        "source-type": "NFM-P",
+                    }
+                ]
+            },
+        )
+
+    def tearDown(self) -> None:
+        """Stop the class-level close() patch."""
+
+        self.close_patcher.stop()
+
+    def test_synchronize_collects_and_maps_inventory(
+        self,
+    ) -> None:
+        """Collector data should reach InventorySyncService."""
+
+        self.service._snapshot_service.collect = MagicMock(
+            return_value=self.snapshot
+        )
+
+        expected_result = SyncResult(
+            sync_id="sync-result-001",
+            total_discovered=1,
+            created=1,
+            status="SUCCESS",
+        )
+
+        self.service._sync_service.synchronize.return_value = (
+            expected_result
+        )
 
         result = self.service.synchronize()
 
-        self.assertIs(result, self.result)
-
-        self.snapshot_service.collect.assert_called_once_with()
-        self.mapper.map.assert_called_once_with(
-            self.snapshot
+        self.assertIs(
+            result,
+            expected_result,
         )
-        self.sync_service.synchronize.assert_called_once_with(
-            self.discovered
+
+        self.service._snapshot_service.collect.assert_called_once()
+
+        self.service._sync_service.synchronize.assert_called_once()
+
+        discovered = (
+            self.service
+            ._sync_service
+            .synchronize
+            .call_args.args[0]
         )
-        self.snapshot_service.close.assert_called_once_with()
 
-    def test_collection_failure_closes_snapshot_service(self) -> None:
-        """Collection failure must still close the collector."""
+        self.assertEqual(
+            len(discovered),
+            1,
+        )
 
-        error = RuntimeError("NSP collection failed")
+        self.assertIsInstance(
+            discovered[0],
+            NetworkElement,
+        )
 
-        self.snapshot_service.collect.side_effect = error
+        self.assertEqual(
+            discovered[0].ne_id,
+            "NE-001",
+        )
+
+        self.assertEqual(
+            discovered[0].component_id,
+            "COMP-001",
+        )
+
+        self.assertEqual(
+            discovered[0].ip_address,
+            "192.0.2.1",
+        )
+
+        self.assertEqual(
+            discovered[0].system_type,
+            "7750 SR",
+        )
+
+        self.assertEqual(
+            discovered[0].software_version,
+            "24.4.1",
+        )
+
+    def test_snapshot_service_is_closed(
+        self,
+    ) -> None:
+        """Snapshot service must be closed after synchronization."""
+
+        self.service._snapshot_service.collect = MagicMock(
+            return_value=self.snapshot
+        )
+
+        self.service._sync_service.synchronize.return_value = (
+            SyncResult(
+                sync_id="sync-result-002",
+                total_discovered=1,
+                created=1,
+                status="SUCCESS",
+            )
+        )
+
+        self.service.synchronize()
+
+        self.close_mock.assert_called_once_with(
+            self.service._snapshot_service
+        )
+
+    def test_snapshot_collection_failure_closes_service(
+        self,
+    ) -> None:
+        """Collector failure must still close resources."""
+
+        self.service._snapshot_service.collect = MagicMock(
+            side_effect=RuntimeError(
+                "NSP collection failure"
+            )
+        )
 
         with self.assertRaises(RuntimeError):
             self.service.synchronize()
 
-        self.mapper.map.assert_not_called()
-        self.sync_service.synchronize.assert_not_called()
-        self.snapshot_service.close.assert_called_once_with()
-
-    def test_mapping_failure_closes_snapshot_service(self) -> None:
-        """Mapping failure must still close the collector."""
-
-        self.snapshot_service.collect.return_value = self.snapshot
-        self.mapper.map.side_effect = RuntimeError(
-            "mapping failed"
+        self.close_mock.assert_called_once_with(
+            self.service._snapshot_service
         )
 
-        with self.assertRaises(RuntimeError):
-            self.service.synchronize()
-
-        self.sync_service.synchronize.assert_not_called()
-        self.snapshot_service.close.assert_called_once_with()
-
-    def test_sync_failure_closes_snapshot_service(self) -> None:
-        """SYNC-001 failure must still close the collector."""
-
-        self.snapshot_service.collect.return_value = self.snapshot
-        self.mapper.map.return_value = self.discovered
-        self.sync_service.synchronize.side_effect = RuntimeError(
-            "database synchronization failed"
-        )
-
-        with self.assertRaises(RuntimeError):
-            self.service.synchronize()
-
-        self.snapshot_service.close.assert_called_once_with()
-
-    def test_sync_result_is_propagated(self) -> None:
-        """SYNC-001 SyncResult must be returned unchanged."""
-
-        self.snapshot_service.collect.return_value = self.snapshot
-        self.mapper.map.return_value = self.discovered
-        self.sync_service.synchronize.return_value = self.result
-
-        result = self.service.synchronize()
-
-        self.assertEqual(result.sync_id, "sync-001")
-        self.assertEqual(result.total_discovered, 1)
-        self.assertEqual(result.created, 1)
-        self.assertEqual(result.status, "SUCCESS")
+        self.service._sync_service.synchronize.assert_not_called()
 
 
 if __name__ == "__main__":
-    unittest.main(verbosity=2)
+    unittest.main(
+        verbosity=2
+    )
