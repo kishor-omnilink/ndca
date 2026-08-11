@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import unittest
 from datetime import datetime, timezone
-from unittest.mock import Mock
+from unittest.mock import ANY, Mock
 
 from ndca.models.dto.equipment import EquipmentDTO
 from ndca.models.equipment import Equipment
@@ -139,7 +139,7 @@ class TestEquipmentSyncService(unittest.TestCase):
         self.service._repository.mark_missing_inactive.assert_called_once_with(
             101,
             {("NSP", "shelf", "shelf=1")},
-            unittest.mock.ANY,
+            ANY,
         )
 
     def test_unknown_network_element_fails_and_rolls_back(self) -> None:
