@@ -7,11 +7,14 @@ Transaction lifecycle remains owned by the calling service.
 
 from __future__ import annotations
 
+from datetime import datetime
+
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
 from ndca.models.equipment import Equipment
+from ndca.models.enums import SyncStatus
 from ndca.repositories.base_repository import BaseRepository
 from ndca.repositories.exceptions import RepositoryQueryError
 
@@ -89,6 +92,7 @@ class EquipmentRepository(BaseRepository[Equipment]):
         self,
         network_element_id: int,
         seen_identity_keys: set[tuple[str, str, str]],
+        now: datetime,
     ) -> int:
         """
         Mark active equipment missing from a complete NE snapshot inactive.
@@ -109,6 +113,8 @@ class EquipmentRepository(BaseRepository[Equipment]):
                 )
                 if entity.is_active and key not in seen_identity_keys:
                     entity.is_active = False
+                    entity.sync_status = SyncStatus.SUCCESS
+                    entity.last_sync = now
                     changed += 1
 
             return changed
