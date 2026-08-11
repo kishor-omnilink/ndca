@@ -7,7 +7,7 @@ Transaction lifecycle remains owned by the calling service.
 
 from __future__ import annotations
 
-from sqlalchemy import select, update
+from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
