@@ -119,6 +119,7 @@ class EquipmentSyncService:
                     result.deactivated += self._repository.mark_missing_inactive(
                         network_element.id,
                         seen,
+                        now,
                     )
 
             self._session.commit()
