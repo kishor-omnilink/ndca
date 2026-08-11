@@ -1,0 +1,857 @@
+{
+    "response": {
+        "status": 0,
+        "startRow": 0,
+        "endRow": 18,
+        "totalRows": 18,
+        "data": [
+            {
+                "fdn": "fdn:model:equipment:NetworkElement:603",
+                "sourceType": "nfmt",
+                "sourceSystem": "fdn:realm:optics",
+                "sources": [
+                    "fdn:realm:optics:network:10.254.0.11",
+                    "fdn:realm:optics:network:id:2"
+                ],
+                "name": "ONET-SHQ-OADM-1",
+                "neName": "ONET-SHQ-OADM-1",
+                "neId": "10.254.0.11",
+                "description": null,
+                "ipAddress": "10.254.0.11",
+                "type": "1830PSS-PHN",
+                "product": "1830 PSS",
+                "version": "24.12",
+                "resyncState": "done",
+                "managedState": "managed",
+                "longitude": 0.0,
+                "latitude": 0.0,
+                "location": "OCAC TOWER",
+                "topologyGroup": null,
+                "adminState": "unlocked",
+                "operState": "enabled",
+                "standbyState": "providingService",
+                "availabilityStates": [],
+                "objectDetails": null,
+                "networkType": "optical",
+                "communicationState": "up",
+                "communicationStateDetails": null,
+                "macAddress": null,
+                "clliCode": null,
+                "links": [
+                    {
+                        "rel": "self",
+                        "href": "https://10.110.11.55/NetworkSupervision/rest/api/v1/networkElements/fdn:model:equipment:NetworkElement:603"
+                    },
+                    {
+                        "rel": "shelves",
+                        "href": "https://10.110.11.55/NetworkSupervision/rest/api/v1/networkElements/fdn:model:equipment:NetworkElement:603/shelves{?filter}"
+                    },
+                    {
+                        "rel": "radioEquipment",
+                        "href": "https://10.110.11.55/NetworkSupervision/rest/api/v1/networkElements/fdn:model:equipment:NetworkElement:603/radioEquipment{?filter}"
+                    }
+                ]
+            },
+            {
+                "fdn": "fdn:model:equipment:NetworkElement:604",
+                "sourceType": "nfmt",
+                "sourceSystem": "fdn:realm:optics",
+                "sources": [
+                    "fdn:realm:optics:network:10.254.0.14",
+                    "fdn:realm:optics:network:id:21"
+                ],
+                "name": "ONET-MDSL-OADM-1",
+                "neName": "ONET-MDSL-OADM-1",
+                "neId": "10.254.0.14",
+                "description": null,
+                "ipAddress": "10.254.0.14",
+                "type": "1830PSS-PHN",
+                "product": "1830 PSS",
+                "version": "24.12",
+                "resyncState": "done",
+                "managedState": "managed",
+                "longitude": 0.0,
+                "latitude": 0.0,
+                "location": "MENDHASALA GRID",
+                "topologyGroup": null,
+                "adminState": "unlocked",
+                "operState": "enabled",
+                "standbyState": "providingService",
+                "availabilityStates": [],
+                "objectDetails": null,
+                "networkType": "optical",
+                "communicationState": "up",
+                "communicationStateDetails": null,
+                "macAddress": null,
+                "clliCode": null,
+                "links": [
+                    {
+                        "rel": "self",
+                        "href": "https://10.110.11.55/NetworkSupervision/rest/api/v1/networkElements/fdn:model:equipment:NetworkElement:604"
+                    },
+                    {
+                        "rel": "shelves",
+                        "href": "https://10.110.11.55/NetworkSupervision/rest/api/v1/networkElements/fdn:model:equipment:NetworkElement:604/shelves{?filter}"
+                    },
+                    {
+                        "rel": "radioEquipment",
+                        "href": "https://10.110.11.55/NetworkSupervision/rest/api/v1/networkElements/fdn:model:equipment:NetworkElement:604/radioEquipment{?filter}"
+                    }
+                ]
+            },
+            {
+                "fdn": "fdn:model:equipment:NetworkElement:605",
+                "sourceType": "nfmt",
+                "sourceSystem": "fdn:realm:optics",
+                "sources": [
+                    "fdn:realm:optics:network:10.254.0.16",
+                    "fdn:realm:optics:network:id:41"
+                ],
+                "name": "ONET-MRDL-OADM-1",
+                "neName": "ONET-MRDL-OADM-1",
+                "neId": "10.254.0.16",
+                "description": null,
+                "ipAddress": "10.254.0.16",
+                "type": "1830PSS-PHN",
+                "product": "1830 PSS",
+                "version": "24.12",
+                "resyncState": "done",
+                "managedState": "managed",
+                "longitude": 0.0,
+                "latitude": 0.0,
+                "location": "MERAMANDALI GRID",
+                "topologyGroup": null,
+                "adminState": "unlocked",
+                "operState": "enabled",
+                "standbyState": "providingService",
+                "availabilityStates": [],
+                "objectDetails": null,
+                "networkType": "optical",
+                "communicationState": "up",
+                "communicationStateDetails": null,
+                "macAddress": null,
+                "clliCode": null,
+                "links": [
+                    {
+                        "rel": "self",
+                        "href": "https://10.110.11.55/NetworkSupervision/rest/api/v1/networkElements/fdn:model:equipment:NetworkElement:605"
+                    },
+                    {
+                        "rel": "shelves",
+                        "href": "https://10.110.11.55/NetworkSupervision/rest/api/v1/networkElements/fdn:model:equipment:NetworkElement:605/shelves{?filter}"
+                    },
+                    {
+                        "rel": "radioEquipment",
+                        "href": "https://10.110.11.55/NetworkSupervision/rest/api/v1/networkElements/fdn:model:equipment:NetworkElement:605/radioEquipment{?filter}"
+                    }
+                ]
+            },
+            {
+                "fdn": "fdn:model:equipment:NetworkElement:606",
+                "sourceType": "nfmt",
+                "sourceSystem": "fdn:realm:optics",
+                "sources": [
+                    "fdn:realm:optics:network:10.254.0.27",
+                    "fdn:realm:optics:network:id:61"
+                ],
+                "name": "ONET-DURN-DILA-1",
+                "neName": "ONET-DURN-DILA-1",
+                "neId": "10.254.0.27",
+                "description": null,
+                "ipAddress": "10.254.0.27",
+                "type": "1830PSS-PHN",
+                "product": "1830 PSS",
+                "version": "24.12",
+                "resyncState": "done",
+                "managedState": "managed",
+                "longitude": 0.0,
+                "latitude": 0.0,
+                "location": "DUBURI NEW GRID",
+                "topologyGroup": null,
+                "adminState": "unlocked",
+                "operState": "enabled",
+                "standbyState": "providingService",
+                "availabilityStates": [],
+                "objectDetails": null,
+                "networkType": "optical",
+                "communicationState": "up",
+                "communicationStateDetails": null,
+                "macAddress": null,
+                "clliCode": null,
+                "links": [
+                    {
+                        "rel": "self",
+                        "href": "https://10.110.11.55/NetworkSupervision/rest/api/v1/networkElements/fdn:model:equipment:NetworkElement:606"
+                    },
+                    {
+                        "rel": "shelves",
+                        "href": "https://10.110.11.55/NetworkSupervision/rest/api/v1/networkElements/fdn:model:equipment:NetworkElement:606/shelves{?filter}"
+                    },
+                    {
+                        "rel": "radioEquipment",
+                        "href": "https://10.110.11.55/NetworkSupervision/rest/api/v1/networkElements/fdn:model:equipment:NetworkElement:606/radioEquipment{?filter}"
+                    }
+                ]
+            },
+            {
+                "fdn": "fdn:model:equipment:NetworkElement:607",
+                "sourceType": "nfmt",
+                "sourceSystem": "fdn:realm:optics",
+                "sources": [
+                    "fdn:realm:optics:network:10.254.0.28",
+                    "fdn:realm:optics:network:id:62"
+                ],
+                "name": "ONET-BDK-OADM-1",
+                "neName": "ONET-BDK-OADM-1",
+                "neId": "10.254.0.28",
+                "description": null,
+                "ipAddress": "10.254.0.28",
+                "type": "1830PSS-PHN",
+                "product": "1830 PSS",
+                "version": "24.12",
+                "resyncState": "done",
+                "managedState": "managed",
+                "longitude": 0.0,
+                "latitude": 0.0,
+                "location": "BHADRAK DHQ",
+                "topologyGroup": null,
+                "adminState": "unlocked",
+                "operState": "enabled",
+                "standbyState": "providingService",
+                "availabilityStates": [],
+                "objectDetails": null,
+                "networkType": "optical",
+                "communicationState": "up",
+                "communicationStateDetails": null,
+                "macAddress": null,
+                "clliCode": null,
+                "links": [
+                    {
+                        "rel": "self",
+                        "href": "https://10.110.11.55/NetworkSupervision/rest/api/v1/networkElements/fdn:model:equipment:NetworkElement:607"
+                    },
+                    {
+                        "rel": "shelves",
+                        "href": "https://10.110.11.55/NetworkSupervision/rest/api/v1/networkElements/fdn:model:equipment:NetworkElement:607/shelves{?filter}"
+                    },
+                    {
+                        "rel": "radioEquipment",
+                        "href": "https://10.110.11.55/NetworkSupervision/rest/api/v1/networkElements/fdn:model:equipment:NetworkElement:607/radioEquipment{?filter}"
+                    }
+                ]
+            },
+            {
+                "fdn": "fdn:model:equipment:NetworkElement:608",
+                "sourceType": "nfmt",
+                "sourceSystem": "fdn:realm:optics",
+                "sources": [
+                    "fdn:realm:optics:network:10.254.0.34",
+                    "fdn:realm:optics:network:id:63"
+                ],
+                "name": "ONET-BNDA-DILA-1",
+                "neName": "ONET-BNDA-DILA-1",
+                "neId": "10.254.0.34",
+                "description": null,
+                "ipAddress": "10.254.0.34",
+                "type": "1830PSS-PHN",
+                "product": "1830 PSS",
+                "version": "24.12",
+                "resyncState": "done",
+                "managedState": "managed",
+                "longitude": 0.0,
+                "latitude": 0.0,
+                "location": "BOINDA GRID",
+                "topologyGroup": null,
+                "adminState": "unlocked",
+                "operState": "enabled",
+                "standbyState": "providingService",
+                "availabilityStates": [],
+                "objectDetails": null,
+                "networkType": "optical",
+                "communicationState": "up",
+                "communicationStateDetails": null,
+                "macAddress": null,
+                "clliCode": null,
+                "links": [
+                    {
+                        "rel": "self",
+                        "href": "https://10.110.11.55/NetworkSupervision/rest/api/v1/networkElements/fdn:model:equipment:NetworkElement:608"
+                    },
+                    {
+                        "rel": "shelves",
+                        "href": "https://10.110.11.55/NetworkSupervision/rest/api/v1/networkElements/fdn:model:equipment:NetworkElement:608/shelves{?filter}"
+                    },
+                    {
+                        "rel": "radioEquipment",
+                        "href": "https://10.110.11.55/NetworkSupervision/rest/api/v1/networkElements/fdn:model:equipment:NetworkElement:608/radioEquipment{?filter}"
+                    }
+                ]
+            },
+            {
+                "fdn": "fdn:model:equipment:NetworkElement:609",
+                "sourceType": "nfmt",
+                "sourceSystem": "fdn:realm:optics",
+                "sources": [
+                    "fdn:realm:optics:network:10.254.0.35",
+                    "fdn:realm:optics:network:id:81"
+                ],
+                "name": "ONET-RRKL-DILA-1",
+                "neName": "ONET-RRKL-DILA-1",
+                "neId": "10.254.0.35",
+                "description": null,
+                "ipAddress": "10.254.0.35",
+                "type": "1830PSS-PHN",
+                "product": "1830 PSS",
+                "version": "24.12",
+                "resyncState": "done",
+                "managedState": "managed",
+                "longitude": 0.0,
+                "latitude": 0.0,
+                "location": "RAIRAKHOL GRID",
+                "topologyGroup": null,
+                "adminState": "unlocked",
+                "operState": "enabled",
+                "standbyState": "providingService",
+                "availabilityStates": [],
+                "objectDetails": null,
+                "networkType": "optical",
+                "communicationState": "up",
+                "communicationStateDetails": null,
+                "macAddress": null,
+                "clliCode": null,
+                "links": [
+                    {
+                        "rel": "self",
+                        "href": "https://10.110.11.55/NetworkSupervision/rest/api/v1/networkElements/fdn:model:equipment:NetworkElement:609"
+                    },
+                    {
+                        "rel": "shelves",
+                        "href": "https://10.110.11.55/NetworkSupervision/rest/api/v1/networkElements/fdn:model:equipment:NetworkElement:609/shelves{?filter}"
+                    },
+                    {
+                        "rel": "radioEquipment",
+                        "href": "https://10.110.11.55/NetworkSupervision/rest/api/v1/networkElements/fdn:model:equipment:NetworkElement:609/radioEquipment{?filter}"
+                    }
+                ]
+            },
+            {
+                "fdn": "fdn:model:equipment:NetworkElement:610",
+                "sourceType": "nfmt",
+                "sourceSystem": "fdn:realm:optics",
+                "sources": [
+                    "fdn:realm:optics:network:10.254.0.36",
+                    "fdn:realm:optics:network:id:82"
+                ],
+                "name": "ONET-SBPG-OADM-1",
+                "neName": "ONET-SBPG-OADM-1",
+                "neId": "10.254.0.36",
+                "description": null,
+                "ipAddress": "10.254.0.36",
+                "type": "1830PSS-PHN",
+                "product": "1830 PSS",
+                "version": "24.12",
+                "resyncState": "done",
+                "managedState": "managed",
+                "longitude": 0.0,
+                "latitude": 0.0,
+                "location": "SAMBALPUR-GRID",
+                "topologyGroup": null,
+                "adminState": "unlocked",
+                "operState": "enabled",
+                "standbyState": "providingService",
+                "availabilityStates": [],
+                "objectDetails": null,
+                "networkType": "optical",
+                "communicationState": "up",
+                "communicationStateDetails": null,
+                "macAddress": null,
+                "clliCode": null,
+                "links": [
+                    {
+                        "rel": "self",
+                        "href": "https://10.110.11.55/NetworkSupervision/rest/api/v1/networkElements/fdn:model:equipment:NetworkElement:610"
+                    },
+                    {
+                        "rel": "shelves",
+                        "href": "https://10.110.11.55/NetworkSupervision/rest/api/v1/networkElements/fdn:model:equipment:NetworkElement:610/shelves{?filter}"
+                    },
+                    {
+                        "rel": "radioEquipment",
+                        "href": "https://10.110.11.55/NetworkSupervision/rest/api/v1/networkElements/fdn:model:equipment:NetworkElement:610/radioEquipment{?filter}"
+                    }
+                ]
+            },
+            {
+                "fdn": "fdn:model:equipment:NetworkElement:611",
+                "sourceType": "nfmt",
+                "sourceSystem": "fdn:realm:optics",
+                "sources": [
+                    "fdn:realm:optics:network:10.254.0.97",
+                    "fdn:realm:optics:network:id:101"
+                ],
+                "name": "ONET-SBP-OADM-1",
+                "neName": "ONET-SBP-OADM-1",
+                "neId": "10.254.0.97",
+                "description": null,
+                "ipAddress": "10.254.0.97",
+                "type": "1830PSS-PHN",
+                "product": "1830 PSS",
+                "version": "24.12",
+                "resyncState": "failed",
+                "managedState": "managed",
+                "longitude": 0.0,
+                "latitude": 0.0,
+                "location": "SAMBALPUR DHQ",
+                "topologyGroup": null,
+                "adminState": "unlocked",
+                "operState": "disabled",
+                "standbyState": "providingService",
+                "availabilityStates": [],
+                "objectDetails": null,
+                "networkType": "optical",
+                "communicationState": "down",
+                "communicationStateDetails": null,
+                "macAddress": null,
+                "clliCode": null,
+                "links": [
+                    {
+                        "rel": "self",
+                        "href": "https://10.110.11.55/NetworkSupervision/rest/api/v1/networkElements/fdn:model:equipment:NetworkElement:611"
+                    },
+                    {
+                        "rel": "shelves",
+                        "href": "https://10.110.11.55/NetworkSupervision/rest/api/v1/networkElements/fdn:model:equipment:NetworkElement:611/shelves{?filter}"
+                    },
+                    {
+                        "rel": "radioEquipment",
+                        "href": "https://10.110.11.55/NetworkSupervision/rest/api/v1/networkElements/fdn:model:equipment:NetworkElement:611/radioEquipment{?filter}"
+                    }
+                ]
+            },
+            {
+                "fdn": "fdn:model:equipment:NetworkElement:3762",
+                "sourceType": "nfmt",
+                "sourceSystem": "fdn:realm:optics",
+                "sources": [
+                    "fdn:realm:optics:network:10.254.0.38",
+                    "fdn:realm:optics:network:id:102"
+                ],
+                "name": "ONET- BRLN-DILA-1",
+                "neName": "ONET- BRLN-DILA-1",
+                "neId": "10.254.0.38",
+                "description": null,
+                "ipAddress": "10.254.0.38",
+                "type": "1830PSS-PHN",
+                "product": "1830 PSS",
+                "version": "24.12",
+                "resyncState": "done",
+                "managedState": "managed",
+                "longitude": 0.0,
+                "latitude": 0.0,
+                "location": "BURLA NEW GRID",
+                "topologyGroup": null,
+                "adminState": "unlocked",
+                "operState": "enabled",
+                "standbyState": "providingService",
+                "availabilityStates": [],
+                "objectDetails": null,
+                "networkType": "optical",
+                "communicationState": "up",
+                "communicationStateDetails": null,
+                "macAddress": null,
+                "clliCode": null,
+                "links": [
+                    {
+                        "rel": "self",
+                        "href": "https://10.110.11.55/NetworkSupervision/rest/api/v1/networkElements/fdn:model:equipment:NetworkElement:3762"
+                    },
+                    {
+                        "rel": "shelves",
+                        "href": "https://10.110.11.55/NetworkSupervision/rest/api/v1/networkElements/fdn:model:equipment:NetworkElement:3762/shelves{?filter}"
+                    },
+                    {
+                        "rel": "radioEquipment",
+                        "href": "https://10.110.11.55/NetworkSupervision/rest/api/v1/networkElements/fdn:model:equipment:NetworkElement:3762/radioEquipment{?filter}"
+                    }
+                ]
+            },
+            {
+                "fdn": "fdn:model:equipment:NetworkElement:3763",
+                "sourceType": "nfmt",
+                "sourceSystem": "fdn:realm:optics",
+                "sources": [
+                    "fdn:realm:optics:network:10.254.0.39",
+                    "fdn:realm:optics:network:id:103"
+                ],
+                "name": "ONET- BRGN-DILA-1",
+                "neName": "ONET- BRGN-DILA-1",
+                "neId": "10.254.0.39",
+                "description": null,
+                "ipAddress": "10.254.0.39",
+                "type": "1830PSS-PHN",
+                "product": "1830 PSS",
+                "version": "24.12",
+                "resyncState": "done",
+                "managedState": "managed",
+                "longitude": 0.0,
+                "latitude": 0.0,
+                "location": "BARAGARH NEW GRID",
+                "topologyGroup": null,
+                "adminState": "unlocked",
+                "operState": "enabled",
+                "standbyState": "providingService",
+                "availabilityStates": [],
+                "objectDetails": null,
+                "networkType": "optical",
+                "communicationState": "up",
+                "communicationStateDetails": null,
+                "macAddress": null,
+                "clliCode": null,
+                "links": [
+                    {
+                        "rel": "self",
+                        "href": "https://10.110.11.55/NetworkSupervision/rest/api/v1/networkElements/fdn:model:equipment:NetworkElement:3763"
+                    },
+                    {
+                        "rel": "shelves",
+                        "href": "https://10.110.11.55/NetworkSupervision/rest/api/v1/networkElements/fdn:model:equipment:NetworkElement:3763/shelves{?filter}"
+                    },
+                    {
+                        "rel": "radioEquipment",
+                        "href": "https://10.110.11.55/NetworkSupervision/rest/api/v1/networkElements/fdn:model:equipment:NetworkElement:3763/radioEquipment{?filter}"
+                    }
+                ]
+            },
+            {
+                "fdn": "fdn:model:equipment:NetworkElement:3764",
+                "sourceType": "nfmt",
+                "sourceSystem": "fdn:realm:optics",
+                "sources": [
+                    "fdn:realm:optics:network:10.254.0.41",
+                    "fdn:realm:optics:network:id:104"
+                ],
+                "name": "ONET-BLG-OADM-1",
+                "neName": "ONET-BLG-OADM-1",
+                "neId": "10.254.0.41",
+                "description": null,
+                "ipAddress": "10.254.0.41",
+                "type": "1830PSS-PHN",
+                "product": "1830 PSS",
+                "version": "24.12",
+                "resyncState": "done",
+                "managedState": "managed",
+                "longitude": 0.0,
+                "latitude": 0.0,
+                "location": "BOLANGIR DHQ",
+                "topologyGroup": null,
+                "adminState": "unlocked",
+                "operState": "enabled",
+                "standbyState": "providingService",
+                "availabilityStates": [],
+                "objectDetails": null,
+                "networkType": "optical",
+                "communicationState": "up",
+                "communicationStateDetails": null,
+                "macAddress": null,
+                "clliCode": null,
+                "links": [
+                    {
+                        "rel": "self",
+                        "href": "https://10.110.11.55/NetworkSupervision/rest/api/v1/networkElements/fdn:model:equipment:NetworkElement:3764"
+                    },
+                    {
+                        "rel": "shelves",
+                        "href": "https://10.110.11.55/NetworkSupervision/rest/api/v1/networkElements/fdn:model:equipment:NetworkElement:3764/shelves{?filter}"
+                    },
+                    {
+                        "rel": "radioEquipment",
+                        "href": "https://10.110.11.55/NetworkSupervision/rest/api/v1/networkElements/fdn:model:equipment:NetworkElement:3764/radioEquipment{?filter}"
+                    }
+                ]
+            },
+            {
+                "fdn": "fdn:model:equipment:NetworkElement:3765",
+                "sourceType": "nfmt",
+                "sourceSystem": "fdn:realm:optics",
+                "sources": [
+                    "fdn:realm:optics:network:10.254.0.103",
+                    "fdn:realm:optics:network:id:121"
+                ],
+                "name": "ONET-BNPR-DILA-1",
+                "neName": "ONET-BNPR-DILA-1",
+                "neId": "10.254.0.103",
+                "description": null,
+                "ipAddress": "10.254.0.103",
+                "type": "1830PSS-PHN",
+                "product": "1830 PSS",
+                "version": "24.12",
+                "resyncState": "done",
+                "managedState": "managed",
+                "longitude": 0.0,
+                "latitude": 0.0,
+                "location": "BANAPUR BHQ",
+                "topologyGroup": null,
+                "adminState": "unlocked",
+                "operState": "enabled",
+                "standbyState": "providingService",
+                "availabilityStates": [],
+                "objectDetails": null,
+                "networkType": "optical",
+                "communicationState": "up",
+                "communicationStateDetails": null,
+                "macAddress": null,
+                "clliCode": null,
+                "links": [
+                    {
+                        "rel": "self",
+                        "href": "https://10.110.11.55/NetworkSupervision/rest/api/v1/networkElements/fdn:model:equipment:NetworkElement:3765"
+                    },
+                    {
+                        "rel": "shelves",
+                        "href": "https://10.110.11.55/NetworkSupervision/rest/api/v1/networkElements/fdn:model:equipment:NetworkElement:3765/shelves{?filter}"
+                    },
+                    {
+                        "rel": "radioEquipment",
+                        "href": "https://10.110.11.55/NetworkSupervision/rest/api/v1/networkElements/fdn:model:equipment:NetworkElement:3765/radioEquipment{?filter}"
+                    }
+                ]
+            },
+            {
+                "fdn": "fdn:model:equipment:NetworkElement:3766",
+                "sourceType": "nfmt",
+                "sourceSystem": "fdn:realm:optics",
+                "sources": [
+                    "fdn:realm:optics:network:10.254.0.104",
+                    "fdn:realm:optics:network:id:122"
+                ],
+                "name": "ONET-NRDR-OADM-1",
+                "neName": "ONET-NRDR-OADM-1",
+                "neId": "10.254.0.104",
+                "description": null,
+                "ipAddress": "10.254.0.104",
+                "type": "1830PSS-PHN",
+                "product": "1830 PSS",
+                "version": "24.12",
+                "resyncState": "done",
+                "managedState": "managed",
+                "longitude": 0.0,
+                "latitude": 0.0,
+                "location": "BERHAMPUR GRID",
+                "topologyGroup": null,
+                "adminState": "unlocked",
+                "operState": "enabled",
+                "standbyState": "providingService",
+                "availabilityStates": [],
+                "objectDetails": null,
+                "networkType": "optical",
+                "communicationState": "up",
+                "communicationStateDetails": null,
+                "macAddress": null,
+                "clliCode": null,
+                "links": [
+                    {
+                        "rel": "self",
+                        "href": "https://10.110.11.55/NetworkSupervision/rest/api/v1/networkElements/fdn:model:equipment:NetworkElement:3766"
+                    },
+                    {
+                        "rel": "shelves",
+                        "href": "https://10.110.11.55/NetworkSupervision/rest/api/v1/networkElements/fdn:model:equipment:NetworkElement:3766/shelves{?filter}"
+                    },
+                    {
+                        "rel": "radioEquipment",
+                        "href": "https://10.110.11.55/NetworkSupervision/rest/api/v1/networkElements/fdn:model:equipment:NetworkElement:3766/radioEquipment{?filter}"
+                    }
+                ]
+            },
+            {
+                "fdn": "fdn:model:equipment:NetworkElement:3767",
+                "sourceType": "nfmt",
+                "sourceSystem": "fdn:realm:optics",
+                "sources": [
+                    "fdn:realm:optics:network:10.254.0.54",
+                    "fdn:realm:optics:network:id:141"
+                ],
+                "name": "ONET-DGPN-DILA-1",
+                "neName": "ONET-DGPN-DILA-1",
+                "neId": "10.254.0.54",
+                "description": null,
+                "ipAddress": "10.254.0.54",
+                "type": "1830PSS-PHN",
+                "product": "1830 PSS",
+                "version": "24.12",
+                "resyncState": "done",
+                "managedState": "managed",
+                "longitude": 0.0,
+                "latitude": 0.0,
+                "location": "DIGAPAHANDI GRID",
+                "topologyGroup": null,
+                "adminState": "unlocked",
+                "operState": "enabled",
+                "standbyState": "providingService",
+                "availabilityStates": [],
+                "objectDetails": null,
+                "networkType": "optical",
+                "communicationState": "up",
+                "communicationStateDetails": null,
+                "macAddress": null,
+                "clliCode": null,
+                "links": [
+                    {
+                        "rel": "self",
+                        "href": "https://10.110.11.55/NetworkSupervision/rest/api/v1/networkElements/fdn:model:equipment:NetworkElement:3767"
+                    },
+                    {
+                        "rel": "shelves",
+                        "href": "https://10.110.11.55/NetworkSupervision/rest/api/v1/networkElements/fdn:model:equipment:NetworkElement:3767/shelves{?filter}"
+                    },
+                    {
+                        "rel": "radioEquipment",
+                        "href": "https://10.110.11.55/NetworkSupervision/rest/api/v1/networkElements/fdn:model:equipment:NetworkElement:3767/radioEquipment{?filter}"
+                    }
+                ]
+            },
+            {
+                "fdn": "fdn:model:equipment:NetworkElement:3768",
+                "sourceType": "nfmt",
+                "sourceSystem": "fdn:realm:optics",
+                "sources": [
+                    "fdn:realm:optics:network:10.254.0.55",
+                    "fdn:realm:optics:network:id:142"
+                ],
+                "name": "ONET-AKSG-DILA-1",
+                "neName": "ONET-AKSG-DILA-1",
+                "neId": "10.254.0.55",
+                "description": null,
+                "ipAddress": "10.254.0.55",
+                "type": "1830PSS-PHN",
+                "product": "1830 PSS",
+                "version": "24.12",
+                "resyncState": "done",
+                "managedState": "managed",
+                "longitude": 0.0,
+                "latitude": 0.0,
+                "location": "AKUSINGI GRID",
+                "topologyGroup": null,
+                "adminState": "unlocked",
+                "operState": "enabled",
+                "standbyState": "providingService",
+                "availabilityStates": [],
+                "objectDetails": null,
+                "networkType": "optical",
+                "communicationState": "up",
+                "communicationStateDetails": null,
+                "macAddress": null,
+                "clliCode": null,
+                "links": [
+                    {
+                        "rel": "self",
+                        "href": "https://10.110.11.55/NetworkSupervision/rest/api/v1/networkElements/fdn:model:equipment:NetworkElement:3768"
+                    },
+                    {
+                        "rel": "shelves",
+                        "href": "https://10.110.11.55/NetworkSupervision/rest/api/v1/networkElements/fdn:model:equipment:NetworkElement:3768/shelves{?filter}"
+                    },
+                    {
+                        "rel": "radioEquipment",
+                        "href": "https://10.110.11.55/NetworkSupervision/rest/api/v1/networkElements/fdn:model:equipment:NetworkElement:3768/radioEquipment{?filter}"
+                    }
+                ]
+            },
+            {
+                "fdn": "fdn:model:equipment:NetworkElement:3769",
+                "sourceType": "nfmt",
+                "sourceSystem": "fdn:realm:optics",
+                "sources": [
+                    "fdn:realm:optics:network:10.254.0.56",
+                    "fdn:realm:optics:network:id:143"
+                ],
+                "name": "ONET-RGD-OADM-1",
+                "neName": "ONET-RGD-OADM-1",
+                "neId": "10.254.0.56",
+                "description": null,
+                "ipAddress": "10.254.0.56",
+                "type": "1830PSS-PHN",
+                "product": "1830 PSS",
+                "version": "24.12",
+                "resyncState": "done",
+                "managedState": "managed",
+                "longitude": 0.0,
+                "latitude": 0.0,
+                "location": "RAYAGADA DHQ",
+                "topologyGroup": null,
+                "adminState": "unlocked",
+                "operState": "enabled",
+                "standbyState": "providingService",
+                "availabilityStates": [],
+                "objectDetails": null,
+                "networkType": "optical",
+                "communicationState": "up",
+                "communicationStateDetails": null,
+                "macAddress": null,
+                "clliCode": null,
+                "links": [
+                    {
+                        "rel": "self",
+                        "href": "https://10.110.11.55/NetworkSupervision/rest/api/v1/networkElements/fdn:model:equipment:NetworkElement:3769"
+                    },
+                    {
+                        "rel": "shelves",
+                        "href": "https://10.110.11.55/NetworkSupervision/rest/api/v1/networkElements/fdn:model:equipment:NetworkElement:3769/shelves{?filter}"
+                    },
+                    {
+                        "rel": "radioEquipment",
+                        "href": "https://10.110.11.55/NetworkSupervision/rest/api/v1/networkElements/fdn:model:equipment:NetworkElement:3769/radioEquipment{?filter}"
+                    }
+                ]
+            },
+            {
+                "fdn": "fdn:model:equipment:NetworkElement:3770",
+                "sourceType": "nfmt",
+                "sourceSystem": "fdn:realm:optics",
+                "sources": [
+                    "fdn:realm:optics:network:10.254.0.25",
+                    "fdn:realm:optics:network:id:161"
+                ],
+                "name": "ONET-NGR-OADM-1",
+                "neName": "ONET-NGR-OADM-1",
+                "neId": "10.254.0.25",
+                "description": null,
+                "ipAddress": "10.254.0.25",
+                "type": "1830PSS-PHN",
+                "product": "1830 PSS",
+                "version": "24.12",
+                "resyncState": "done",
+                "managedState": "managed",
+                "longitude": 0.0,
+                "latitude": 0.0,
+                "location": "NAYAGARH DHQ",
+                "topologyGroup": null,
+                "adminState": "unlocked",
+                "operState": "enabled",
+                "standbyState": "providingService",
+                "availabilityStates": [],
+                "objectDetails": null,
+                "networkType": "optical",
+                "communicationState": "up",
+                "communicationStateDetails": null,
+                "macAddress": null,
+                "clliCode": null,
+                "links": [
+                    {
+                        "rel": "self",
+                        "href": "https://10.110.11.55/NetworkSupervision/rest/api/v1/networkElements/fdn:model:equipment:NetworkElement:3770"
+                    },
+                    {
+                        "rel": "shelves",
+                        "href": "https://10.110.11.55/NetworkSupervision/rest/api/v1/networkElements/fdn:model:equipment:NetworkElement:3770/shelves{?filter}"
+                    },
+                    {
+                        "rel": "radioEquipment",
+                        "href": "https://10.110.11.55/NetworkSupervision/rest/api/v1/networkElements/fdn:model:equipment:NetworkElement:3770/radioEquipment{?filter}"
+                    }
+                ]
+            }
+        ],
+        "errors": null
+    }
+}
