@@ -148,6 +148,25 @@ class TestNFMPPerformanceCollectorSkeleton(unittest.TestCase):
         records = collector.collect_current(["bgp.PeerStats"], ["ne1:if1"], sync_id="s-7")
         self.assertEqual(records[0].xml_class, "bgp.PeerStats")
 
+    def test_response_xml_class_must_be_verified(self) -> None:
+        client = MagicMock(spec=NFMPXmlClient)
+        client.trigger_collect.return_value = [{
+            "metric": "received_octets",
+            "value": 42,
+            "object_id": "ne1:if1",
+            "object_name": "if1",
+            "category": "Interface / Network Port",
+            "xml_class": "unknown.UnverifiedClass",
+        }]
+
+        collector = NFMPPerformanceCollector(
+            client=client,
+            verified_classes={"equipment.InterfaceStats"},
+        )
+
+        with self.assertRaises(ValueError):
+            collector.collect_current(["equipment.InterfaceStats"], ["ne1:if1"], sync_id="s-8")
+
     def test_ambiguous_multi_class_response_without_xml_class_keeps_none(self) -> None:
         client = MagicMock(spec=NFMPXmlClient)
         client.trigger_collect.return_value = [{
@@ -163,7 +182,7 @@ class TestNFMPPerformanceCollectorSkeleton(unittest.TestCase):
             verified_classes={"equipment.InterfaceStats", "bgp.PeerStats"},
         )
 
-        records = collector.collect_current(["equipment.InterfaceStats", "bgp.PeerStats"], ["ne1:if1"], sync_id="s-8")
+        records = collector.collect_current(["equipment.InterfaceStats", "bgp.PeerStats"], ["ne1:if1"], sync_id="s-9")
         self.assertIsNone(records[0].xml_class)
 
 

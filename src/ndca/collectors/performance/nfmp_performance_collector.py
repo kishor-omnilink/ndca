@@ -24,9 +24,8 @@ _DEFAULT_REGISTER_CSV = Path("docs/sync/SYNC-012-A_Performance_Counter_Register.
 def _load_verified_xml_classes(register_path: str | Path | None = None) -> set[str]:
     """Load VERIFIED xml_api_class values from the SYNC-012-A register.
 
-    This helper is intentionally opt-in and is only used when a caller provides
-    a register path or chooses to load the default file explicitly. It must not
-    be treated as a mandatory runtime dependency for production use.
+    This helper is explicit and optional. The normal production path does not
+    depend on a repository-relative CSV at runtime.
     """
     verified: set[str] = set()
     register_file = Path(register_path) if register_path else _DEFAULT_REGISTER_CSV
@@ -90,6 +89,7 @@ class NFMPPerformanceCollector:
         elif register_path is not None:
             self._verified_classes = _load_verified_xml_classes(register_path)
         else:
+            # Production path: do not implicitly read a repository-relative CSV.
             self._verified_classes = set()
 
     @classmethod
@@ -164,12 +164,22 @@ class NFMPPerformanceCollector:
             if not isinstance(item, dict):
                 continue
 
+            response_xml_class = item.get("xml_class")
+            if response_xml_class is not None:
+                response_xml_class = str(response_xml_class).strip()
+                if not response_xml_class:
+                    response_xml_class = None
+                elif response_xml_class not in self._verified_classes:
+                    raise ValueError(
+                        f"Response XML API class is not VERIFIED: {response_xml_class}"
+                    )
+
             metric = item.get("metric") or item.get("metric_name") or "unknown"
             value = item.get("value")
             object_id = item.get("object_id") or item.get("monitored_object") or ""
             object_name = item.get("object_name")
             source_time = _coerce_utc_datetime(item.get("source_time"))
-            xml_class = item.get("xml_class")
+            xml_class = response_xml_class
             if xml_class is None and len(requested) == 1:
                 xml_class = requested[0]
 
