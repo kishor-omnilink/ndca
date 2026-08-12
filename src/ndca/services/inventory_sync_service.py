@@ -1,10 +1,17 @@
 """
-SYNC-004 - Inventory Synchronization Service.
+SYNC-004 / SYNC-011-A - Inventory Synchronization Service.
 
-Synchronizes discovered Network Elements into the database and
-persists the execution history of each successful synchronization.
+Synchronizes discovered Network Elements into PostgreSQL.
 
-Transaction lifecycle is owned by this service.
+SYNC-011-A adds explicit snapshot completeness handling:
+
+    COMPLETE snapshot
+        -> missing active Network Elements may be deactivated
+
+    PARTIAL snapshot
+        -> missing Network Elements must NOT be deactivated
+
+Transaction ownership remains inside this service.
 """
 
 from __future__ import annotations
@@ -27,43 +34,82 @@ from ndca.repositories.synchronization_run_repository import (
 
 
 class InventorySyncService:
-    """Synchronize discovered Network Elements into the database."""
+    """Synchronize discovered Network Elements into PostgreSQL."""
 
-    def __init__(self, session: Session) -> None:
+    def __init__(
+        self,
+        session: Session,
+    ) -> None:
         """Initialize the synchronization service."""
 
         self._session = session
-        self._repository = NetworkElementRepository(session)
-        self._run_repository = SynchronizationRunRepository(session)
+
+        self._repository = NetworkElementRepository(
+            session
+        )
+
+        self._run_repository = SynchronizationRunRepository(
+            session
+        )
 
     def synchronize(
         self,
         discovered: list[NetworkElement],
+        *,
+        complete_snapshot: bool = True,
+        snapshot_complete: bool | None = None,
     ) -> SyncResult:
+
         """
         Synchronize discovered Network Elements.
-
-        The complete synchronization and synchronization-run record
-        are persisted as one database transaction.
 
         Parameters
         ----------
         discovered:
-            Network Elements produced by the existing collector/mapper.
+            Network Elements produced by the collector and mapper.
+
+        complete_snapshot:
+            Indicates whether the Network Element collection is
+            authoritative.
+
+            True:
+                Missing active Network Elements may be deactivated.
+
+            False:
+                Missing Network Elements are left untouched.
 
         Returns
         -------
         SyncResult
-            Statistics for this synchronization run.
+            Statistics for the synchronization.
 
         Raises
         ------
         Exception
-            Re-raises any synchronization exception after rollback.
-        """
+            Any synchronization error is rolled back and re-raised.
 
-        sync_id = str(uuid4())
-        started_at = datetime.now(timezone.utc)
+        Notes
+        -----
+        The default value remains True for backward compatibility with
+        the previously frozen SYNC-010 direct service contract.
+
+        The production orchestration layer must explicitly pass the
+        InventorySnapshot completeness state.
+        """
+        # SYNC-011-A compatibility alias.
+        # Keep complete_snapshot as the existing SYNC-010/SYNC-011
+        # service contract while accepting snapshot_complete from
+        # the snapshot-safety orchestration/tests.
+        if snapshot_complete is not None:
+            complete_snapshot = snapshot_complete
+
+        sync_id = str(
+            uuid4()
+        )
+
+        synchronized_at = datetime.now(
+            timezone.utc
+        )
 
         result = SyncResult(
             sync_id=sync_id,
@@ -71,7 +117,7 @@ class InventorySyncService:
         )
 
         try:
-            existing = {
+            existing_entities = {
                 entity.ne_id: entity
                 for entity in self._repository.find_all()
             }
@@ -79,23 +125,46 @@ class InventorySyncService:
             discovered_ids: set[str] = set()
 
             for incoming in discovered:
-                discovered_ids.add(incoming.ne_id)
+                if not incoming.ne_id:
+                    raise ValueError(
+                        "Network Element is missing required ne_id"
+                    )
 
-                current = existing.get(incoming.ne_id)
+                if incoming.ne_id in discovered_ids:
+                    raise ValueError(
+                        "Duplicate Network Element identity: "
+                        f"{incoming.ne_id}"
+                    )
+
+                discovered_ids.add(
+                    incoming.ne_id
+                )
+
+                current = existing_entities.get(
+                    incoming.ne_id
+                )
 
                 if current is None:
-                    incoming.sync_status = SyncStatus.SUCCESS
-                    incoming.last_sync = started_at
                     incoming.is_active = True
+                    incoming.sync_status = (
+                        SyncStatus.SUCCESS
+                    )
+                    incoming.last_sync = (
+                        synchronized_at
+                    )
 
-                    self._repository.save(incoming)
+                    self._repository.save(
+                        incoming
+                    )
+
                     result.created += 1
+
                     continue
 
                 changed = self._update_entity(
-                    current,
-                    incoming,
-                    started_at,
+                    current=current,
+                    incoming=incoming,
+                    synchronized_at=synchronized_at,
                 )
 
                 if changed:
@@ -103,22 +172,37 @@ class InventorySyncService:
                 else:
                     result.unchanged += 1
 
-            # Elements previously known to NDCA but no longer returned
-            # by the complete NSP inventory are marked inactive.
-            for ne_id, current in existing.items():
-                if ne_id not in discovered_ids and current.is_active:
-                    current.is_active = False
-                    current.sync_status = SyncStatus.SUCCESS
-                    current.last_sync = started_at
-                    result.deactivated += 1
+            if complete_snapshot:
+                for (
+                    ne_id,
+                    current,
+                ) in existing_entities.items():
 
-            completed_at = datetime.now(timezone.utc)
+                    if (
+                        ne_id not in discovered_ids
+                        and current.is_active
+                    ):
+                        current.is_active = False
+
+                        current.sync_status = (
+                            SyncStatus.SUCCESS
+                        )
+
+                        current.last_sync = (
+                            synchronized_at
+                        )
+
+                        result.deactivated += 1
+
+            completed_at = datetime.now(
+                timezone.utc
+            )
 
             result.status = "SUCCESS"
 
             synchronization_run = SynchronizationRun(
                 sync_id=sync_id,
-                started_at=started_at,
+                started_at=synchronized_at,
                 completed_at=completed_at,
                 total_discovered=result.total_discovered,
                 created=result.created,
@@ -130,7 +214,9 @@ class InventorySyncService:
                 error_message=None,
             )
 
-            self._run_repository.save(synchronization_run)
+            self._run_repository.save(
+                synchronization_run
+            )
 
             self._session.commit()
 
@@ -138,17 +224,27 @@ class InventorySyncService:
 
         except Exception:
             self._session.rollback()
+
             result.status = "FAILED"
             result.failed = 1
+
             raise
 
     @staticmethod
     def _update_entity(
+        *,
         current: NetworkElement,
         incoming: NetworkElement,
-        now: datetime,
+        synchronized_at: datetime,
     ) -> bool:
-        """Update an existing entity and return whether it changed."""
+        """
+        Update an existing Network Element.
+
+        Returns
+        -------
+        bool
+            True when the existing entity changed.
+        """
 
         fields = (
             "ne_name",
@@ -164,19 +260,36 @@ class InventorySyncService:
 
         changed = False
 
-        for field in fields:
-            new_value = getattr(incoming, field)
-            old_value = getattr(current, field)
+        for field_name in fields:
+            incoming_value = getattr(
+                incoming,
+                field_name,
+            )
 
-            if old_value != new_value:
-                setattr(current, field, new_value)
+            current_value = getattr(
+                current,
+                field_name,
+            )
+
+            if current_value != incoming_value:
+                setattr(
+                    current,
+                    field_name,
+                    incoming_value,
+                )
+
                 changed = True
 
         if not current.is_active:
             current.is_active = True
             changed = True
 
-        current.sync_status = SyncStatus.SUCCESS
-        current.last_sync = now
+        current.sync_status = (
+            SyncStatus.SUCCESS
+        )
+
+        current.last_sync = (
+            synchronized_at
+        )
 
         return changed
