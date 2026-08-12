@@ -137,16 +137,16 @@ class TestNFMPPerformanceCollectorSkeleton(unittest.TestCase):
             "object_id": "ne1:if1",
             "object_name": "if1",
             "category": "Interface / Network Port",
-            "xml_class": "bgp.PeerStats",
+            "xml_class": "equipment.InterfaceStats",
         }]
 
         collector = NFMPPerformanceCollector(
             client=client,
-            verified_classes={"bgp.PeerStats"},
+            verified_classes={"equipment.InterfaceStats"},
         )
 
-        records = collector.collect_current(["bgp.PeerStats"], ["ne1:if1"], sync_id="s-7")
-        self.assertEqual(records[0].xml_class, "bgp.PeerStats")
+        records = collector.collect_current(["equipment.InterfaceStats"], ["ne1:if1"], sync_id="s-7")
+        self.assertEqual(records[0].xml_class, "equipment.InterfaceStats")
 
     def test_response_xml_class_must_be_verified(self) -> None:
         client = MagicMock(spec=NFMPXmlClient)
@@ -179,11 +179,59 @@ class TestNFMPPerformanceCollectorSkeleton(unittest.TestCase):
 
         collector = NFMPPerformanceCollector(
             client=client,
-            verified_classes={"equipment.InterfaceStats", "bgp.PeerStats"},
+            verified_classes={"equipment.InterfaceStats", "equipment.InterfaceAdditionalStats"},
         )
 
-        records = collector.collect_current(["equipment.InterfaceStats", "bgp.PeerStats"], ["ne1:if1"], sync_id="s-9")
+        records = collector.collect_current([
+            "equipment.InterfaceStats",
+            "equipment.InterfaceAdditionalStats",
+        ], ["ne1:if1"], sync_id="s-9")
         self.assertIsNone(records[0].xml_class)
+
+    def test_trigger_collect_request_contains_documented_operation(self) -> None:
+        request = NFMPXmlClient.build_trigger_collect_request(
+            ["ne1"],
+            ["equipment.InterfaceStats", "equipment.InterfaceAdditionalStats"],
+        )
+
+        self.assertIn("generic.GenericObject.triggerCollect", request)
+        self.assertIn("<instanceNames>", request)
+        self.assertIn("<currentDataClasses>", request)
+        self.assertIn("equipment.InterfaceStats", request)
+        self.assertIn("equipment.InterfaceAdditionalStats", request)
+
+    def test_parse_trigger_collect_response(self) -> None:
+        xml = (
+            '<?xml version="1.0" encoding="UTF-8"?>\n'
+            '<root>\n'
+            '  <record>\n'
+            '    <xmlClass>equipment.InterfaceStats</xmlClass>\n'
+            '    <metric>received_octets</metric>\n'
+            '    <value>123</value>\n'
+            '    <objectId>ne1:if1</objectId>\n'
+            '    <sourceTime>2024-01-01T12:00:00+00:00</sourceTime>\n'
+            '  </record>\n'
+            '</root>'
+        )
+
+        parsed = NFMPXmlClient.parse_trigger_collect_response(xml)
+        self.assertEqual(parsed[0]["xml_class"], "equipment.InterfaceStats")
+        self.assertEqual(parsed[0]["metric"], "received_octets")
+        self.assertEqual(parsed[0]["value"], "123")
+
+    def test_malformed_xml_is_rejected(self) -> None:
+        with self.assertRaises(ValueError):
+            NFMPXmlClient.parse_trigger_collect_response("<broken>")
+
+    def test_empty_response_is_handled_without_inventory_assumption(self) -> None:
+        client = MagicMock(spec=NFMPXmlClient)
+        client.trigger_collect.return_value = []
+        collector = NFMPPerformanceCollector(
+            client=client,
+            verified_classes={"equipment.InterfaceStats"},
+        )
+        records = collector.collect_current(["equipment.InterfaceStats"], ["ne1"], sync_id="s-10")
+        self.assertEqual(records, [])
 
 
 if __name__ == "__main__":

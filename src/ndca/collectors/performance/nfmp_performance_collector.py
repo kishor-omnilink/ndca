@@ -75,6 +75,11 @@ class NFMPPerformanceCollector:
     transport to `NFMPXmlClient` which is expected to be mocked during tests.
     """
 
+    VERIFIED_INTERFACE_CURRENT_DATA_CLASSES = {
+        "equipment.InterfaceStats",
+        "equipment.InterfaceAdditionalStats",
+    }
+
     def __init__(
         self,
         client: NFMPXmlClient | None = None,
@@ -89,7 +94,6 @@ class NFMPPerformanceCollector:
         elif register_path is not None:
             self._verified_classes = _load_verified_xml_classes(register_path)
         else:
-            # Production path: do not implicitly read a repository-relative CSV.
             self._verified_classes = set()
 
     @classmethod
@@ -125,6 +129,19 @@ class NFMPPerformanceCollector:
             sync_id=sync_id,
         )
 
+    def collect_interface_current_data(
+        self,
+        instance_names: Iterable[str],
+        sync_id: str | None = None,
+    ) -> List[PerformanceRecord]:
+        """Collect only the verified interface current-data classes."""
+        requested = list(self.VERIFIED_INTERFACE_CURRENT_DATA_CLASSES)
+        return self.collect_current(
+            current_data_classes=requested,
+            instance_names=instance_names,
+            sync_id=sync_id,
+        )
+
     def collect_current(
         self,
         current_data_classes: Iterable[str],
@@ -156,6 +173,10 @@ class NFMPPerformanceCollector:
         except Exception as exc:
             self.logger.error("Performance collection failed", error=str(exc))
             raise CollectorError("Performance collection failed") from exc
+
+        if raw is None:
+            self.logger.warning("Empty response from current-data trigger", sync_id=sync_id)
+            return []
 
         records: List[PerformanceRecord] = []
         now = datetime.now(timezone.utc)
