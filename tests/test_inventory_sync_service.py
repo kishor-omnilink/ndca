@@ -4,6 +4,7 @@ SYNC-001 Inventory Synchronization Service tests.
 Uses Python unittest and mocked repository/session objects.
 
 These tests validate the inventory synchronization business logic:
+
 - create new Network Elements
 - update changed Network Elements
 - reactivate previously inactive Network Elements
@@ -11,6 +12,7 @@ These tests validate the inventory synchronization business logic:
 - deactivate missing Network Elements
 - aggregate synchronization statistics
 - rollback on synchronization failure
+- complete/partial snapshot safety
 """
 
 from __future__ import annotations
@@ -62,6 +64,31 @@ class TestInventorySyncService(unittest.TestCase):
             is_active=True,
         )
 
+    def _network_element(
+        self,
+        ne_id: str,
+        *,
+        is_active: bool = True,
+    ) -> NetworkElement:
+        """
+        Build a standard NetworkElement for synchronization tests.
+
+        This helper is intentionally kept in the existing SYNC-011 test
+        class so SYNC-011-A can reuse the established test structure.
+        """
+
+        return NetworkElement(
+            component_id=ne_id,
+            ne_id=ne_id,
+            ne_name=f"OCAC-TEST-{ne_id}",
+            ip_address=ne_id,
+            system_type="7750 SR",
+            software_version="24.4",
+            vendor="Nokia",
+            display_name=f"OCAC-TEST-{ne_id}",
+            is_active=is_active,
+        )
+
     def test_create_new_network_element(self) -> None:
         """New discovered NE should be created."""
 
@@ -72,7 +99,10 @@ class TestInventorySyncService(unittest.TestCase):
             self.ne1,
         ]
 
-        result = self.service.synchronize(discovered)
+        result = self.service.synchronize(
+            discovered,
+            complete_snapshot=True,
+        )
 
         self.repository.save.assert_called_once_with(
             self.ne1
@@ -141,7 +171,8 @@ class TestInventorySyncService(unittest.TestCase):
         self.repository.find_all.return_value = [existing]
 
         result = self.service.synchronize(
-            [discovered]
+            [discovered],
+            complete_snapshot=True,
         )
 
         self.assertEqual(
@@ -192,7 +223,8 @@ class TestInventorySyncService(unittest.TestCase):
         self.repository.find_all.return_value = [existing]
 
         result = self.service.synchronize(
-            [discovered]
+            [discovered],
+            complete_snapshot=True,
         )
 
         self.assertEqual(
@@ -255,7 +287,8 @@ class TestInventorySyncService(unittest.TestCase):
         self.repository.find_all.return_value = [existing]
 
         result = self.service.synchronize(
-            [discovered]
+            [discovered],
+            complete_snapshot=True,
         )
 
         self.assertTrue(
@@ -287,7 +320,10 @@ class TestInventorySyncService(unittest.TestCase):
         self.repository.find_by_ne_id.return_value = None
         self.repository.find_all.return_value = [existing]
 
-        result = self.service.synchronize([])
+        result = self.service.synchronize(
+            [],
+            complete_snapshot=True,
+        )
 
         self.assertFalse(
             existing.is_active
@@ -393,7 +429,8 @@ class TestInventorySyncService(unittest.TestCase):
         ]
 
         result = self.service.synchronize(
-            discovered
+            discovered,
+            complete_snapshot=True,
         )
 
         self.assertEqual(
@@ -427,17 +464,67 @@ class TestInventorySyncService(unittest.TestCase):
         """Synchronization failure should rollback."""
 
         self.repository.find_all.side_effect = (
-            RuntimeError("Simulated repository failure")
+            RuntimeError(
+                "Simulated repository failure"
+            )
         )
 
         with self.assertRaises(RuntimeError):
             self.service.synchronize(
-                [self.ne1]
+                [self.ne1],
+                complete_snapshot=True,
             )
 
         self.session.rollback.assert_called_once()
 
         self.session.commit.assert_not_called()
 
+    def test_partial_snapshot_does_not_deactivate(
+        self,
+    ) -> None:
+        """
+        A partial snapshot must never deactivate a missing NE.
+
+        This is the SYNC-011-A safety requirement.
+        """
+
+        existing = self._network_element(
+            "172.26.0.8",
+            is_active=True,
+        )
+
+        self.repository.find_all.return_value = [
+            existing,
+        ]
+
+        result = self.service.synchronize(
+            [],
+            complete_snapshot=False,
+        )
+
+        self.assertIsInstance(
+            result,
+            SyncResult,
+        )
+
+        self.assertEqual(
+            result.total_discovered,
+            0,
+        )
+
+        self.assertEqual(
+            result.deactivated,
+            0,
+        )
+
+        self.assertTrue(
+            existing.is_active
+        )
+
+        self.session.commit.assert_called_once()
+
+
 if __name__ == "__main__":
-    unittest.main(verbosity=2)
+    unittest.main(
+        verbosity=2
+    )
