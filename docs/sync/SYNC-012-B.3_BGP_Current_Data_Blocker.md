@@ -4,79 +4,100 @@
 
 BLOCKED
 
-This document formally records that SYNC-012-B.3 is blocked pending vendor evidence for BGP current-data collection. This blocker is based on the verified discovery artifacts in the repository and does not infer or invent any NFM-P XML request, response, field names, or API classes.
+This document records that SYNC-012-B.3 remains blocked even though the generic NFM-P 24.4 performance-collection evidence has been verified. The verified evidence confirms the generic collection mechanism and the documented BGP class names, but it does not confirm the exact BGP XML payload or the exact BGP field names required for a safe implementation. No BGP field names, XML payload structure, or normalized mapping are inferred or invented here.
 
 ## 1. Candidate capability
 
 Candidate capability under review: `bgp.PeerStats` current performance data.
 
-This is a candidate NFM-P statistics class for current BGP peer statistics. The class name itself is documented as a candidate capability in the SYNC-012-A discovery artifacts, but the required request/response evidence for implementation is not yet available in the supplied repository evidence.
+This capability is documented as a verified XML API class in the NFM-P 24.4 XML API Developer Guide and in the SYNC-012-A register, but the exact BGP XML response structure and field names remain unknown.
 
-## 2. Verified classes from SYNC-012-A
+## 2. Verified evidence from the NFM-P 24.4 guides
+
+The following items are verified from the uploaded NFM-P 24.4 XML API Developer Guide Issue 1 and Statistics Management Guide Issue 1:
+
+- `bgp.PeerStats` — VERIFIED — XML API Developer Guide §14.4.1, p.175; §14.6, p.180; §7.1.1 / information-model reference, p.85
+- `bgp.PeerStatsLogRecord` — VERIFIED — XML API Developer Guide §14.4.1, p.175; §14.8.2, pp.185-187; §14.8.3, p.188
+- `generic.GenericObject.triggerCollect` — VERIFIED — XML API Developer Guide §14.5.5, p.179
+- `instanceNames` — VERIFIED — XML API Developer Guide §14.5.5, p.179; §14.6, p.180
+- `currentDataClasses` — VERIFIED — XML API Developer Guide §14.5.5, p.179; §14.6, p.180
+- scheduled BGP PeerStats collection example — VERIFIED — XML API Developer Guide §14.7, p.182; §14.8.2, pp.185-187
+- 5-minute scheduled polling example — VERIFIED — XML API Developer Guide §14.8.3, p.188
+- `registerLogToFile` retrieval mechanism — VERIFIED — XML API Developer Guide §14.6, p.180; §14.8.2, pp.185-187; §14.8.3, p.188
+- `registerLogToFile` generic input structure — VERIFIED — XML API Developer Guide §14.8.2, pp.185-187; §14.8.3, p.188
+- generic XML statistics output structure — VERIFIED — XML API Developer Guide §14.4.1, p.175; §14.6, p.180; §14.8.2, pp.185-187
+
+The following repository artifacts record the same verified status:
+
+- [docs/sync/SYNC-012-A_NFMP_Performance_API_Discovery.md](docs/sync/SYNC-012-A_NFMP_Performance_API_Discovery.md)
+- [docs/sync/SYNC-012-A_Performance_Counter_Register.csv](docs/sync/SYNC-012-A_Performance_Counter_Register.csv)
+
+## 3. Verified classes from SYNC-012-A
 
 The following classes are verified by the SYNC-012-A discovery and register artifacts:
 
 - `bgp.PeerStats`
 - `bgp.PeerStatsLogRecord`
 
-These entries are recorded in:
+These are recorded in the repository discovery and register artifacts above and are consistent with the uploaded NFM-P 24.4 documentation.
 
-- `docs/sync/SYNC-012-A_NFMP_Performance_API_Discovery.md`
-- `docs/sync/SYNC-012-A_Performance_Counter_Register.csv`
+## 4. What is already verified
 
-## 3. What is already verified
-
-The following items are already verified in the SYNC-012-A evidence set:
+The following items are already verified:
 
 - `generic.GenericObject.triggerCollect`
 - `instanceNames`
 - `currentDataClasses`
 - VERIFIED status of `bgp.PeerStats` in the SYNC-012-A register
+- scheduled BGP PeerStats collection example
+- 5-minute scheduled polling example
+- `registerLogToFile` retrieval mechanism
+- `registerLogToFile` generic input structure
+- generic XML statistics output structure
 
-This means that the generic collection mechanism and the high-level class identification are accepted as evidence, but the BGP-specific XML payload and normalization details are not yet verified.
+This confirms the generic operation path and the documented presence of the BGP class names in the NFM-P design and discovery artifacts. It does not confirm the exact BGP XML payload contract or the specific BGP counter names.
 
-## 4. Missing evidence
+## 5. Missing evidence that remains blocked
 
-The following evidence is still missing and is required before implementation may proceed safely:
+The following evidence is still missing and remains a blocker before implementation may proceed safely:
 
-- documented BGP response XML/schema
-- exact BGP counter/field names
-- response-to-normalized-field mapping
-- exact registerLogToFile request schema
-- bgp.PeerStatsLogRecord response structure
-- exact source page/section evidence where unavailable
+- exact `bgp.PeerStats` attribute/counter names
+- exact `bgp.PeerStats` XML response payload
+- exact `bgp.PeerStatsLogRecord` attributes
+- BGP-specific response-to-NDCA normalized-field mapping
+- exact source page/section evidence for any additional BGP-specific response detail not yet cited
 
-The current repository evidence does not contain the actual BGP XML payload schema, the exact counter names, or the mapping from the vendor response to NDCA normalized fields. The exact page/section citations for the vendor PDFs are also not available in the supplied evidence summary, and implementation must not proceed on undocumented assumptions.
+This document does not infer or invent any BGP field names. The exact payload, field names, and normalized mapping remain UNKNOWN.
 
-## 5. Why implementation cannot safely proceed without this evidence
+## 6. Why implementation cannot safely proceed without this evidence
 
-SYNC-012-B.3 cannot be implemented safely without the required evidence because:
+SYNC-012-B.3 cannot be implemented safely even with the verified generic operation path because:
 
-- the XML response contract is not yet proven;
-- the exact field names and data types are not yet documented;
-- the response-to-normalized-field translation cannot be validated without a verified payload and mapping;
-- the registerLogToFile request shape for BGP is not proven;
-- bgp.PeerStatsLogRecord has not been shown to have a valid response structure in the supplied evidence; and
-- any implementation based on inferred XML names or guessed field semantics would create unsupported production behavior and would violate the evidence-first rule in the SYNC-012-A and SYNC-012-B design artifacts.
+- the XML response contract for BGP current data is not yet proven;
+- the exact BGP counter names and attribute names are not documented in the supplied evidence;
+- the response-to-normalized-field translation cannot be validated without a verified BGP payload contract;
+- `bgp.PeerStatsLogRecord` attributes are not yet verified at the field level;
+- any implementation based on inferred XML names or guessed field semantics would create unsupported production behavior and would violate the evidence-first rule used throughout the SYNC-012-A and SYNC-012-B design artifacts.
 
-The design document explicitly states that UNKNOWN or undocumented classes must not be implemented or hard-coded. A BGP current-data collector would require verified request and response structure before normalization or persistence can be considered safe.
+The design documents require verified request structure and verified response mapping before production logic is introduced. The BGP-specific details remain outside that threshold.
 
-## 6. Required implementation gates before B.3
+## 7. Required implementation gates before B.3
 
 The following gates are required before any implementation of SYNC-012-B.3 is allowed:
 
 - Gate 1: API/request structure verified.
-  - Verify the exact NFM-P request structure used to invoke BGP current data collection and any related request parameters.
-  - Confirm the exact usage of `triggerCollect`, `instanceNames`, and `currentDataClasses` with `bgp.PeerStats`.
+  - Verify the exact NFM-P request structure used to invoke BGP current data collection.
+  - Confirm the exact API contract for `triggerCollect`, `instanceNames`, and `currentDataClasses` when targeting `bgp.PeerStats`.
+  - Confirm the exact `registerLogToFile` request details, including the generic input structure already verified.
 
 - Gate 2: response structure and field mapping verified.
-  - Verify the exact BGP XML response structure.
+  - Verify the exact BGP XML response payload.
   - Confirm every counter/field name, type, and meaning.
-  - Document the exact response-to-normalized-field mapping before any collector or parser logic is implemented.
+  - Document the exact response-to-normalized-field mapping before any parser or collector logic is implemented.
 
-No implementation is permitted to proceed until both gates are satisfied with explicit evidence.
+No implementation is permitted to proceed until both gates are satisfied and the exact BGP payload semantics are documented.
 
-## 7. Explicit non-implementation status
+## 8. Explicit non-implementation status
 
 This document records the following restrictions:
 
@@ -87,18 +108,18 @@ This document records the following restrictions:
 - no historical LogRecord implementation
 - no invented XML fields/classes
 
-No implementation artifacts are introduced here. This is a blocker record only.
+No implementation artifacts are introduced here. This remains a blocker record only.
 
-## 8. Repository evidence references
+## 9. Repository evidence references
 
 Relevant repository paths:
 
-- `docs/sync/SYNC-012-A_NFMP_Performance_API_Discovery.md`
-- `docs/sync/SYNC-012-A_Performance_Counter_Register.csv`
-- `docs/sync/SYNC-012-B_NFMP_Performance_Collector_Design.md`
+- [docs/sync/SYNC-012-A_NFMP_Performance_API_Discovery.md](docs/sync/SYNC-012-A_NFMP_Performance_API_Discovery.md)
+- [docs/sync/SYNC-012-A_Performance_Counter_Register.csv](docs/sync/SYNC-012-A_Performance_Counter_Register.csv)
+- [docs/sync/SYNC-012-B_NFMP_Performance_Collector_Design.md](docs/sync/SYNC-012-B_NFMP_Performance_Collector_Design.md)
 
-The SYNC-012-A discovery and register artifacts are the authoritative verification inputs. The SYNC-012-B design doc states that implementation must be gated on verified API structure and verified response mapping before production behavior is introduced.
+The discovery and register artifacts establish the evidence baseline. The B.3 gate remains in place until the exact BGP response payload and field mapping are documented and verified.
 
-## 9. Resolution statement
+## 10. Resolution statement
 
-SYNC-012-B.3 is BLOCKED pending the missing BGP evidence described above. The milestone must not proceed until the required evidence is available and both implementation gates are satisfied.
+SYNC-012-B.3 remains BLOCKED. The generic collection path is verified, but the exact BGP payload and field-level mapping remain UNKNOWN. The milestone must not proceed until the remaining BGP evidence is supplied and both implementation gates are satisfied.
