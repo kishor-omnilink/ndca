@@ -118,6 +118,65 @@ class Settings(BaseSettings):
     max_retries: int = 3
 
     # ==========================================================================
+    # Kafka (SYNC-012-B.3)
+    # ==========================================================================
+
+    kafka_enabled: bool = Field(
+        default=False,
+        description="Enable Kafka BGP performance collector",
+    )
+
+    kafka_bootstrap_servers: str = Field(
+        default="localhost:9092",
+        description="Kafka bootstrap servers (comma-separated)",
+    )
+
+    kafka_topic: str = Field(
+        default="",
+        description="Kafka topic for BGP telemetry",
+    )
+
+    kafka_group_id: str = Field(
+        default="ndca-sync-012-b3-bgp",
+        description="Kafka consumer group ID",
+    )
+
+    kafka_auto_offset_reset: str = Field(
+        default="latest",
+        description="Kafka auto.offset.reset policy",
+    )
+
+    kafka_poll_timeout: float = Field(
+        default=1.0,
+        description="Kafka poll timeout in seconds",
+    )
+
+    kafka_security_protocol: str = Field(
+        default="",
+        description="Kafka security protocol (SASL_SSL, SSL, etc.)",
+    )
+
+    kafka_ssl_ca_location: str = Field(
+        default="",
+        description="Path to Kafka SSL CA certificate",
+    )
+
+    kafka_ssl_certificate_location: str = Field(
+        default="",
+        description="Path to Kafka SSL client certificate",
+    )
+
+    kafka_ssl_key_location: str = Field(
+        default="",
+        description="Path to Kafka SSL client key",
+    )
+
+    kafka_ssl_key_password: str = Field(
+        default="",
+        description="Password for Kafka SSL key (if encrypted)",
+    )
+
+    # ==========================================================================
     # TimescaleDB
     # ==========================================================================
 
