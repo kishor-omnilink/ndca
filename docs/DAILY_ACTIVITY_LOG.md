@@ -334,3 +334,70 @@ The working tree contains 3 modified configuration/dependency files and 12 untra
 **SYNC-012-B.3 live Kafka transport validation: VERIFIED.**
 
 The implementation has now been validated against the actual Kafka broker and target BGP topic, in addition to the existing offline/unit-test validation.
+
+---
+
+## 2026-08-19 — SYNC-012-B.3 Formal Completion
+
+### SYNC-012-B.3 Status
+
+**SYNC-012-B.3 — Kafka BGP Performance Collector: COMPLETE**
+
+The SYNC-012-B.3 implementation and live Kafka transport validation are formally complete.
+
+### Final Validation
+
+- ✅ SYNC-012-B.3 acceptance criteria 1–13 verified.
+- ✅ Full targeted SYNC-012 test suite: **72/72 PASS**.
+- ✅ Python compilation check passed.
+- ✅ `git diff --check` passed.
+- ✅ Kafka TCP connectivity verified.
+- ✅ Kafka SSL/TLS connectivity verified.
+- ✅ Kafka broker metadata successfully retrieved.
+- ✅ Target BGP Kafka topic confirmed available.
+- ✅ `ConfluentKafkaSource` initialized successfully.
+- ✅ Real BGP Kafka telemetry successfully received from the target topic.
+- ✅ Live validation received 2 real BGP telemetry records.
+- ✅ Received payloads contained the verified BGP telemetry structure and mapped fields.
+- ✅ No implementation changes were required during the live-validation follow-up.
+
+### Git / Documentation
+
+- Implementation commit:
+  `4517c61 feat(sync-012-b): implement Kafka BGP performance collector`
+- Live-validation documentation commit:
+  `006fcbf docs(sync-012-b3): record successful live Kafka validation`
+
+### Milestone Decision
+
+**SYNC-012-B.3 is CLOSED as implemented and validated.**
+
+No further Kafka transport validation is required for B.3 at this stage.
+
+### Next SYNC-012 Milestone
+
+The repository does not currently define a formal B.4 specification. Therefore no new B.4 implementation is being declared by this update.
+
+The next proposed SYNC-012 workstream is:
+
+**Remaining NFM-P Performance API / Evidence Coverage**
+
+Focus areas already identified by SYNC-012-A/B include:
+
+- MPLS performance classes and exact XML API mappings.
+- IP performance classes.
+- Ethernet performance classes.
+- OSPF performance statistics.
+- IS-IS performance statistics.
+- Exact XML API class names and LogRecord mappings where still UNKNOWN.
+- Exact operation/request/response structures where vendor evidence is still incomplete.
+- Mapping newly verified NFM-P performance classes to the NDCA target data model.
+
+Progression should remain evidence-first: UNKNOWN API classes or payload structures must be verified from vendor evidence before implementation.
+
+### Current Overall SYNC-012 Position
+
+- **SYNC-012-A:** API discovery completed with documented remaining evidence gaps.
+- **SYNC-012-B.2:** Interface current-data implementation completed and regression validated.
+- **SYNC-012-B.3:** Kafka BGP performance collector **COMPLETE / CLOSED**.
+- **Next:** Resolve remaining NFM-P performance API/evidence gaps and define the next implementation scope from verified evidence.
