@@ -295,3 +295,42 @@ The working tree contains 3 modified configuration/dependency files and 12 untra
 - Record validation/testing when actually performed.
 - Do not invent work, decisions, tests, or outcomes.
 - Preserve the project/workstream label `Branch · Branch · Network Requirement Analysis`.
+
+---
+
+## 2026-08-19 — SYNC-012-B.3 Live Kafka Validation
+
+### Live Kafka Validation
+
+- Confirmed TCP connectivity to Kafka broker `10.110.11.60:9192`.
+- Confirmed Kafka SSL/TLS connectivity using the verified NSP CA certificate.
+- Kafka metadata retrieval succeeded and confirmed `BROKER_COUNT=1`.
+- Confirmed target BGP Kafka topic:
+  `ns-eg-1716a23b-7c94-4393-831d-cd97c20c1e70`
+- Confirmed the BGP topic has 1 partition with leader broker `100`.
+- Confirmed `ConfluentKafkaSource` initializes successfully against the target broker/topic.
+- Initial short polling windows returned no messages.
+- A subsequent 120-second live polling run successfully received **2 real Kafka BGP telemetry records**.
+- The received records contained the expected `nsp-kpi:real_time_kpi-event` structure and BGP telemetry fields including `kpiType`, `neId`, `objectId`, session state, prefix counters, message/octet counters, and timestamps.
+- This validates broker connectivity, TLS configuration, topic availability, NDCA Kafka source initialization, and successful receipt of real BGP telemetry.
+- No source-code changes were made during this follow-up; this is a documentation-only update.
+
+### Validation Evidence
+
+- `KAFKA_SSL_CONNECTIVITY=PASS`
+- `BROKER_COUNT=1`
+- `BGP_TOPIC=FOUND`
+- `PARTITIONS=1`
+- `NDCA_SOURCE_INIT=PASS`
+- `LIVE_MESSAGES_RECEIVED=2`
+
+### Additional Polling Note
+
+- A later 50-second mapper-check polling run captured `0` records because no message arrived during that polling window.
+- This does not invalidate the earlier successful 120-second live receipt and is not treated as a blocker.
+
+### Current Status
+
+**SYNC-012-B.3 live Kafka transport validation: VERIFIED.**
+
+The implementation has now been validated against the actual Kafka broker and target BGP topic, in addition to the existing offline/unit-test validation.
