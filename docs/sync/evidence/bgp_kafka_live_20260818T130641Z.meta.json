@@ -1,0 +1,11 @@
+{
+  "evidence_type": "LIVE_KAFKA_BGP",
+  "broker": "10.110.11.60:9192",
+  "topic": "ns-eg-1716a23b-7c94-4393-831d-cd97c20c1e70",
+  "security_protocol": "SSL",
+  "capture_timestamp_utc": "2026-08-18T13:06:54Z",
+  "source_file": "bgp_kafka_live_20260818T130641Z.jsonl",
+  "messages_read": 4,
+  "bgp_messages_observed": 3,
+  "purpose": "SYNC-012-B.3 Gate 2 BGP evidence"
+}

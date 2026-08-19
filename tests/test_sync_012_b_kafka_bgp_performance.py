@@ -58,7 +58,11 @@ class TestSync012BKafkaBGPPerformance(unittest.TestCase):
                     "peer-as": 64200,
                     "received_messages": 185,
                     "received_messages-periodic": 21,
+                    "received_route-refresh": 2,
+                    "received_route-refresh-periodic": 1,
                     "sent_messages": 297,
+                    "sent_route-refresh": 3,
+                    "sent_route-refresh-periodic": 1,
                     "family-prefix_ipv4_received": 1,
                     "family-prefix_ipv4_sent": 5891,
                     "family-prefix_ipv6_received": 0,
@@ -161,6 +165,31 @@ class TestSync012BKafkaBGPPerformance(unittest.TestCase):
         metrics = {record.metric for record in records}
         self.assertIn("received_messages-periodic", metrics)
 
+    def test_mapper_handles_route_refresh_counters(self) -> None:
+        """Evidence-observed route-refresh counters are mapped."""
+        records = BGPKafkaMapper().map_record(
+            value=self._payload(),
+            topic="test-topic",
+        )
+        metrics = {record.metric for record in records}
+        self.assertIn("received_route-refresh", metrics)
+        self.assertIn("received_route-refresh-periodic", metrics)
+        self.assertIn("sent_route-refresh", metrics)
+        self.assertIn("sent_route-refresh-periodic", metrics)
+
+    def test_mapper_rejects_unverified_periodic_fields(self) -> None:
+        """Only periodic variants of verified fields are accepted."""
+        payload = self._payload()
+        payload["ietf-restconf:notification"]["nsp-kpi:real_time_kpi-event"][
+            "unverified_metric-periodic"
+        ] = 123
+        records = BGPKafkaMapper().map_record(
+            value=payload,
+            topic="test-topic",
+        )
+        metrics = {record.metric for record in records}
+        self.assertNotIn("unverified_metric-periodic", metrics)
+
     def test_mapper_normalizes_timestamp_to_utc(self) -> None:
         """Source timestamps are normalized to UTC."""
         records = BGPKafkaMapper().map_record(
@@ -187,6 +216,8 @@ class TestSync012BKafkaBGPPerformance(unittest.TestCase):
             self.assertEqual(record.raw_payload["kafka"]["topic"], "test-topic")
             self.assertEqual(record.raw_payload["kafka"]["partition"], 5)
             self.assertEqual(record.raw_payload["kafka"]["offset"], 42)
+            self.assertIn("payload", record.raw_payload)
+            self.assertEqual(record.raw_payload["payload"], self._payload())
 
     def test_mapper_rejects_json_decode_error(self) -> None:
         """Malformed JSON is rejected."""
@@ -325,6 +356,40 @@ class TestSync012BKafkaBGPPerformance(unittest.TestCase):
         for record in records:
             if record.metric in {"established-transitions", "family-prefix_ipv4_received"}:
                 self.assertIsNotNone(record.value)
+    def test_consumer_continues_after_malformed_record(self) -> None:
+        records = [
+            KafkaRecord(
+                topic="test-topic",
+                partition=0,
+                offset=1,
+                value=b"bad",
+            ),
+            KafkaRecord(
+                topic="test-topic",
+                partition=0,
+                offset=2,
+                value=b"good",
+            ),
+        ]
+
+        source = FakeSource(records)
+
+        processed = []
+
+        def handler(record):
+            if record.value == b"bad":
+                raise BGPKafkaPayloadError("malformed payload")
+            processed.append(record)
+
+        consumer = KafkaBGPPerformanceConsumer(
+            source=source,
+            handler=handler,
+        )
+
+        count = consumer.consume(max_messages=2)
+        self.assertEqual(count, 1)
+        self.assertEqual(len(processed), 1)
+        self.assertEqual(processed[0].offset, 2)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,12 @@
+{
+  "capture_timestamp_utc": "2026-08-19T07:53:56.494733Z",
+  "class": "bgp.PeerStats",
+  "evidence_status": "VERIFIED",
+  "instanceNames": [
+    "ne-1"
+  ],
+  "metadata_file": "bgp_PeerStats_20260819T075356Z.meta.json",
+  "operation": "generic.GenericObject.triggerCollect",
+  "response_file": "bgp_PeerStats_20260819T075356Z.xml",
+  "source": "NFM-P 24.4 XML API Developer Guide Issue 1"
+}
