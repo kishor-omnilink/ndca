@@ -509,3 +509,36 @@ SYNC-012-C — EVIDENCE RECONCILIATION COMPLETE / ACCEPTANCE MATRIX FROZEN.
 
 ### Deferred
 Further NFM-P evidence collection for unresolved domains will be handled as a separate follow-on milestone. No speculative implementation is authorized.
+
+## 2026-08-20 — SYNC-012-C Commit Closure
+
+### Commit Verification
+- SYNC-012-C final acceptance document committed successfully.
+- Commit: `6656891` — `docs(sync-012): freeze C evidence acceptance matrix`
+- Committed files:
+  - `docs/DAILY_ACTIVITY_LOG.md`
+  - `docs/sync/SYNC-012-C_Final_Evidence_Acceptance.md`
+- Commit contains 461 insertions.
+- No source-code changes were included.
+- No test changes were included.
+- No evidence metadata changes were included.
+- Working tree contains only the pre-existing untracked `docs/Project State Document.md`, which remains intentionally outside SYNC-012-C.
+
+### Final Milestone Status
+SYNC-012-C — EVIDENCE RECONCILIATION COMPLETE / ACCEPTANCE MATRIX FROZEN / COMMITTED.
+
+### Next Milestone
+Planned follow-on work: SYNC-012-D — Deferred NFM-P Evidence Closure.
+
+Priority remains evidence-first:
+1. Interface Additional historical/LogRecord contract
+2. MPLS LSP Egress historical contract
+3. MPLS LSP accounting
+4. MPLS DM
+5. SAR IP
+6. MPLS/IP Interface
+7. IS-IS performance domains
+8. CFM DMM/LMM/SLM
+9. TWL
+
+No speculative collector implementation is authorized until the required NFM-P API/evidence contract is established.
