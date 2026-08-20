@@ -401,3 +401,111 @@ Progression should remain evidence-first: UNKNOWN API classes or payload structu
 - **SYNC-012-B.2:** Interface current-data implementation completed and regression validated.
 - **SYNC-012-B.3:** Kafka BGP performance collector **COMPLETE / CLOSED**.
 - **Next:** Resolve remaining NFM-P performance API/evidence gaps and define the next implementation scope from verified evidence.
+
+## 2026-08-19 — SYNC-012-C Remaining NFM-P Performance API / Evidence Coverage
+
+### Completed / Verified Today
+
+- Confirmed SYNC-012-B.3 Kafka BGP Performance Collector remains COMPLETE / CLOSED.
+- Began SYNC-012-C evidence-first investigation for remaining NFM-P performance API gaps.
+- Reviewed existing SYNC-012-A / SYNC-012-B evidence and performance collector design constraints.
+- Confirmed OSPF is NOT used in the project and is explicitly EXCLUDED from remaining performance API scope.
+- Inspected live NSP 25.4 Data Collection and Analysis → Management → Telemetry Subscriptions.
+- Confirmed actual NSP telemetry subscriptions and collection intervals, including:
+  - `service_vprn_bgp_nei...` — enabled — 600 seconds
+  - `Interface_Utilization...` — enabled — 900 seconds
+  - `InterfaceStats_Filter...` — enabled — 10 seconds
+  - `utilization_ingress` — enabled — 900 seconds
+  - `utilization_egress` — enabled — 900 seconds
+  - `utilization_mpls` — enabled — 900 seconds
+  - OAM-PM test subscriptions — enabled — 300 seconds
+- Confirmed the NSP Telemetry Type catalogue exposes 395 telemetry types.
+- Verified concrete MPLS telemetry models from the live NSP UI:
+  - `telemetry:/base/mpls-interfaces/mpls-interface`
+  - `telemetry:/base/oampm-accounting/mpls-dm-session-acc-stats`
+  - `telemetry:/base/oampm-accounting/mpls-dmbin-acc-stats`
+  - `telemetry:/base/accounting/combined-mpls-lsp-ingress`
+  - `telemetry:/base/accounting/combined-mpls-lsp-egress`
+  - `telemetry:/base/interfaces/combined-mpls-ip-interface`
+- Verified concrete IS-IS telemetry models from existing project evidence:
+  - `service_vprn_isis_statistics`
+  - `service_vprn_isis_interface_level_statistics`
+  - `service_vprn_isis_loopfree-alternate_statistics`
+- Verified Ethernet/OAM-PM telemetry models including CFM DMM/LMM/SLM accounting statistics.
+- Established that telemetry model names MUST NOT be treated as equivalent to NFM-P XML API class names.
+- Confirmed NFM-P XML API evidence for the performance collection mechanism:
+  - CurrentData
+  - LogRecord
+  - `triggerCollect`
+  - `registerLogToFile`
+  - `findToFile`
+- Verified partial XML API PM evidence:
+  - `sas.PmStats`
+  - `sas.MplsDmSession`
+  - `sas.TWLSession`
+  - `ethernetoam.CfmDmmSession`
+  - `ethernetoam.CfmLmmSession`
+  - `ethernetoam.CfmSlmSession`
+- Confirmed exact XML API mappings for MPLS interface/LSP/IP-interface performance statistics are still UNKNOWN.
+- Confirmed exact XML API mappings for IS-IS performance statistics are still UNKNOWN.
+- Confirmed exact LogRecord mappings, request schemas and response structures remain open for the unresolved domains.
+- Confirmed collection intervals are telemetry/subscription-specific and must not be hard-coded into the future performance data contract.
+- No implementation changes made.
+- No ORM/TimescaleDB changes made.
+- No new collector implementation started.
+- No NSP telemetry subscription was created or modified.
+
+### Evidence / Scope Decisions
+
+- Evidence-first approach remains mandatory.
+- UNKNOWN remains UNKNOWN until exact Nokia evidence verifies the XML API class.
+- No API class names will be inferred from telemetry naming similarity.
+- OSPF is excluded from SYNC-012-C because it is not used in this project.
+- Documentation Drift identified during the investigation is DEFERRED for later cleanup after SYNC-012-C evidence is finalized.
+- `docs/Project State Document.md` adoption/tracking status remains to be deliberately reviewed; it must not be assumed to be tracked.
+
+### Current SYNC-012-C Status
+
+- B.3: COMPLETE / CLOSED.
+- MPLS telemetry model evidence: VERIFIED.
+- IS-IS telemetry model evidence: VERIFIED.
+- Ethernet/OAM telemetry model evidence: VERIFIED.
+- MPLS/IS-IS exact XML API performance classes: UNKNOWN / OPEN.
+- Exact LogRecord mappings: OPEN.
+- Exact request/response schemas: OPEN.
+- IP performance API coverage: OPEN.
+- OSPF: EXCLUDED.
+
+### Next Task
+
+- Locate and inspect the Nokia NFM-P 24.4 XML API Reference / Schema Reference.
+- Build an evidence-backed XML API mapping matrix for:
+  1. MPLS interface/LSP/IP-interface statistics
+  2. IS-IS statistics
+  3. Ethernet/OAM-PM statistics
+  4. IP performance statistics
+- Only classify a class as VERIFIED when the Nokia evidence explicitly establishes the exact XML API class.
+- Do NOT begin another collector implementation until the relevant XML API/data contract is sufficiently verified.
+
+## 2026-08-20 — SYNC-012-C Evidence Reconciliation Frozen
+
+### Completed
+- Completed SYNC-012-C final evidence reconciliation from the currently available repository evidence.
+- Frozen the SYNC-012-C performance-domain acceptance matrix.
+- Created `docs/sync/SYNC-012-C_Final_Evidence_Acceptance.md`.
+- Confirmed Interface, BGP, MPLS Interface and IP Interface as accepted/implementation-ready.
+- Confirmed `equipment.InterfaceAdditionalStats` as VERIFIED for CurrentData; historical LogRecord mapping remains deferred.
+- Recorded remaining MPLS, MPLS/IP, MPLS DM, IS-IS, CFM DMM/LMM/SLM, SAR IP and TWL evidence gaps.
+- Confirmed OSPF remains explicitly excluded.
+- Recorded CFM/TWL and Interface Additional historical documentation drift for later cleanup.
+- No source-code changes made.
+- No test changes made.
+- No ORM/TimescaleDB changes made.
+- No new collector implementation started.
+- SYNC-012-B.3 BGP implementation remains COMPLETE / CLOSED.
+
+### Status
+SYNC-012-C — EVIDENCE RECONCILIATION COMPLETE / ACCEPTANCE MATRIX FROZEN.
+
+### Deferred
+Further NFM-P evidence collection for unresolved domains will be handled as a separate follow-on milestone. No speculative implementation is authorized.
