@@ -56,7 +56,59 @@ class NFMPXmlClient:
             f'  <currentDataClasses>{class_xml}</currentDataClasses>\n'
             '</generic.GenericObject.triggerCollect>'
         )
+    @staticmethod
+    def build_find_to_file_request(query: dict[str, Any]) -> str:
+        """Build the documented generic findToFile request.
 
+        This builder intentionally accepts the historical XML API class name
+        from the caller. It does not assume or invent a specific LogRecord
+        class because the exact Interface Additional historical class has not
+        yet been verified by the available NFM-P evidence.
+        """
+
+        full_class_name = str(query.get("full_class_name", "")).strip()
+        monitored_object_pointer = str(
+            query.get("monitored_object_pointer", "")
+        ).strip()
+        file_name = str(query.get("file_name", "")).strip()
+
+        time_captured = query.get("time_captured")
+        if not isinstance(time_captured, dict):
+            raise ValueError("time_captured must be a dictionary")
+
+        first = str(time_captured.get("first", "")).strip()
+        second = str(time_captured.get("second", "")).strip()
+
+        if not full_class_name:
+            raise ValueError("full_class_name is required")
+
+        if not monitored_object_pointer:
+            raise ValueError("monitored_object_pointer is required")
+
+        if not first:
+            raise ValueError("time_captured.first is required")
+
+        if not second:
+            raise ValueError("time_captured.second is required")
+
+        if not file_name:
+            raise ValueError("file_name is required")
+
+        return (
+            '<?xml version="1.0" encoding="UTF-8"?>\n'
+            '<findToFile xmlns="xmlapi_1.0">\n'
+            f"  <fullClassName>{escape(full_class_name)}</fullClassName>\n"
+            "  <filter>\n"
+            "    <and>\n"
+            f'      <equal name="monitoredObjectPointer" '
+            f'value="{escape(monitored_object_pointer)}"/>\n'
+            f'      <between name="timeCaptured" '
+            f'first="{escape(first)}" second="{escape(second)}"/>\n'
+            "    </and>\n"
+            "  </filter>\n"
+            f"  <fileName>{escape(file_name)}</fileName>\n"
+            "</findToFile>"
+        )
     @staticmethod
     def parse_trigger_collect_response(xml_payload: str) -> list[dict[str, Any]]:
         """Parse a minimal triggerCollect response into record dictionaries.

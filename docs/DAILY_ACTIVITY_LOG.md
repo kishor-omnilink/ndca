@@ -542,3 +542,71 @@ Priority remains evidence-first:
 9. TWL
 
 No speculative collector implementation is authorized until the required NFM-P API/evidence contract is established.
+
+## 2026-08-20 — SYNC-012-C Closure / SYNC-012-D.1 Priority 1
+
+### Repository / Branch
+
+- Repository: `/opt/ndca/repo`
+- Actual branch: `feature/sync-012-b-performance-collector`
+- Workstream: `Branch · Branch · Network Requirement Analysis`
+- D.1/D.8 implementation-foundation changes are present in the working tree.
+
+The current implementation adds a generic NFMP XML API findToFile request builder
+with validation and XML escaping. The builder intentionally accepts the historical
+class name from the caller and does not infer or hard-code an Interface Additional
+LogRecord class.
+
+Associated request-builder tests are present and the following validation passed:
+
+- D.8 / performance collector tests: 33 passed
+- SYNC-012-A API discovery tests: 12 passed
+- Python compileall: PASS
+
+No historical Interface Additional LogRecord implementation has been introduced.
+The exact historical LogRecord class, attributes, response structure and NDCA
+mapping remain UNKNOWN/OPEN.
+
+### Activity Completed
+
+- Completed the SYNC-012-C final evidence reconciliation and froze the acceptance matrix.
+- Recorded remaining evidence gaps and documentation-drift items.
+- Started SYNC-012-D.1 to close the deferred historical-performance evidence gap for `equipment.InterfaceAdditionalStats`.
+- Established that `equipment.InterfaceAdditionalStats` is VERIFIED for current-data collection.
+- Confirmed the historical/LogRecord contract remains unresolved.
+- Reviewed the existing `triggerCollect`, `registerLogToFile`, and `findToFile` retrieval mechanisms.
+- Preserved the evidence-first rule: no inferred LogRecord class, response schema, field mapping, or production implementation.
+- Existing BGP Kafka performance collector remains COMPLETE / CLOSED and was not reopened.
+
+### Files / Evidence
+
+- `docs/sync/SYNC-012-C_Final_Evidence_Acceptance.md`
+- `docs/sync/SYNC-012-D.1_Interface_Additional_Historical_Evidence_Gap.md`
+- `docs/sync/SYNC-012-A_Performance_Counter_Register.csv`
+- `docs/DAILY_ACTIVITY_LOG.md`
+- Existing NFM-P performance evidence under `docs/sync/evidence/`
+
+### Validation
+
+- SYNC-012-C acceptance matrix and evidence-gap register were reviewed.
+- D.1 current-data and historical references were reconciled.
+- No new production implementation was introduced.
+
+### Issues / Blockers
+
+- Exact historical LogRecord class for `equipment.InterfaceAdditionalStats` remains UNKNOWN.
+- Exact historical attributes, response structure, request structure, and field mapping remain unverified.
+- Candidate `equipment.InterfaceAdditionalStatsLogRecord` must not be treated as authoritative.
+
+### Current Project Status
+
+**SYNC-012-C: COMPLETE / ACCEPTANCE MATRIX FROZEN**
+
+**SYNC-012-D.1: IN PROGRESS — Interface Additional Historical Evidence Gap**
+
+### Next Actions
+
+1. Continue SYNC-012-D Priority 1 evidence reconciliation.
+2. Verify the exact historical/LogRecord contract from authoritative Nokia evidence.
+3. Do not implement historical Interface Additional processing until the evidence gate is satisfied.
+4. Preserve previously completed SYNC-012-B.3 Kafka BGP collector as CLOSED.
