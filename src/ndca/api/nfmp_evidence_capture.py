@@ -20,6 +20,11 @@ from ndca.api.nfmp_xml_client import NFMPXmlClient
 from ndca.core.config import settings
 
 _ALLOWED_XML_CLASSES = {"bgp.PeerStats"}
+
+_ALLOWED_HISTORICAL_XML_CLASSES = {
+    "equipment.InterfaceAdditionalStatsLogRecord",
+}
+
 _EVIDENCE_DIR = Path("docs/sync/evidence")
 
 
@@ -58,6 +63,26 @@ class NFMPEvidenceCaptureUtility:
                 f"Unsupported XML class for evidence capture: {normalized}. "
                 "Allowed classes: bgp.PeerStats"
             )
+        return normalized
+
+    @staticmethod
+    def _normalize_historical_xml_class(
+        xml_class: str,
+    ) -> str:
+        normalized = str(xml_class).strip()
+
+        if not normalized:
+            raise ValueError("XML class is required")
+
+        if normalized not in _ALLOWED_HISTORICAL_XML_CLASSES:
+            raise ValueError(
+                "Unsupported historical XML class: "
+                f"{normalized}. Allowed classes: "
+                + ", ".join(
+                    sorted(_ALLOWED_HISTORICAL_XML_CLASSES)
+                )
+            )
+
         return normalized
 
     @staticmethod
@@ -166,6 +191,167 @@ class NFMPEvidenceCaptureUtility:
         }
 
 
+    def capture_historical_response(
+        self,
+        endpoint: str,
+        monitored_object_pointer: str,
+        time_captured_first: str,
+        time_captured_second: str,
+        file_name: str,
+        xml_class: str = (
+            "equipment.InterfaceAdditionalStatsLogRecord"
+        ),
+        auth_config: dict[str, Any] | None = None,
+        response_xml: str | None = None,
+        transport: Any | None = None,
+    ) -> dict[str, Any]:
+        """Capture raw XML from the historical findToFile operation."""
+        if not endpoint or not str(endpoint).strip():
+            raise ValueError(
+                "NFM-P endpoint/base URL is required"
+            )
+
+        normalized_class = (
+            self._normalize_historical_xml_class(
+                xml_class
+            )
+        )
+
+        query = {
+            "full_class_name": normalized_class,
+            "monitored_object_pointer": (
+                str(monitored_object_pointer).strip()
+            ),
+            "time_captured": {
+                "first": str(
+                    time_captured_first
+                ).strip(),
+                "second": str(
+                    time_captured_second
+                ).strip(),
+            },
+            "file_name": str(
+                file_name
+            ).strip(),
+        }
+
+        request_xml = (
+            NFMPXmlClient.build_find_to_file_request(
+                query
+            )
+        )
+
+        if response_xml is not None:
+            raw_xml = response_xml
+        else:
+            resolved_transport = (
+                transport
+                or self._build_transport(
+                    endpoint,
+                    auth_config,
+                )
+            )
+            raw_xml = resolved_transport(
+                request_xml
+            )
+
+        if not isinstance(raw_xml, str):
+            raise ValueError(
+                "findToFile transport must return XML as a string"
+            )
+
+        capture_ts = datetime.now(
+            timezone.utc
+        )
+        timestamp_slug = capture_ts.strftime(
+            "%Y%m%dT%H%M%SZ"
+        )
+
+        response_filename = (
+            f"{normalized_class.replace('.', '_')}_"
+            f"{timestamp_slug}.xml"
+        )
+        metadata_filename = (
+            f"{normalized_class.replace('.', '_')}_"
+            f"{timestamp_slug}.meta.json"
+        )
+
+        self.output_dir.mkdir(
+            parents=True,
+            exist_ok=True,
+        )
+
+        response_path = (
+            self.output_dir
+            / response_filename
+        )
+        metadata_path = (
+            self.output_dir
+            / metadata_filename
+        )
+
+        response_path.write_text(
+            raw_xml,
+            encoding="utf-8",
+        )
+
+        metadata = {
+            "source": (
+                "NFM-P 24.4 XML API Developer Guide Issue 1"
+            ),
+            "class": normalized_class,
+            "operation": "findToFile",
+            "capture_timestamp_utc": (
+                capture_ts.isoformat()
+                .replace("+00:00", "Z")
+            ),
+            "monitoredObjectPointer": (
+                query["monitored_object_pointer"]
+            ),
+            "timeCaptured": (
+                query["time_captured"]
+            ),
+            "fileName": query["file_name"],
+            "evidence_status": "CAPTURED",
+            "response_file": response_filename,
+            "metadata_file": metadata_filename,
+        }
+
+        metadata_path.write_text(
+            json.dumps(
+                metadata,
+                indent=2,
+                sort_keys=True,
+            ),
+            encoding="utf-8",
+        )
+
+        return {
+            "source": metadata["source"],
+            "class": normalized_class,
+            "operation": metadata["operation"],
+            "capture_timestamp_utc": (
+                metadata["capture_timestamp_utc"]
+            ),
+            "monitoredObjectPointer": (
+                query["monitored_object_pointer"]
+            ),
+            "timeCaptured": query["time_captured"],
+            "fileName": query["file_name"],
+            "evidence_status": (
+                metadata["evidence_status"]
+            ),
+            "request_xml": request_xml,
+            "raw_xml": raw_xml,
+            "response_path": str(
+                response_path
+            ),
+            "metadata_path": str(
+                metadata_path
+            ),
+        }
+
+
 def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Read-only NFM-P evidence capture for bgp.PeerStats")
     parser.add_argument("--endpoint", required=True, help="NFM-P base URL or endpoint URL")
@@ -194,6 +380,28 @@ def _build_parser() -> argparse.ArgumentParser:
         default=str(_EVIDENCE_DIR),
         help="Directory used to save raw XML and metadata.",
     )
+    parser.add_argument(
+        "--operation",
+        choices=["triggerCollect", "findToFile"],
+        default="triggerCollect",
+        help="NFM-P operation to capture.",
+    )
+    parser.add_argument(
+        "--monitored-object-pointer",
+        help="Historical monitoredObjectPointer used by findToFile.",
+    )
+    parser.add_argument(
+        "--time-captured-first",
+        help="Historical timeCaptured first epoch-millisecond value.",
+    )
+    parser.add_argument(
+        "--time-captured-second",
+        help="Historical timeCaptured second epoch-millisecond value.",
+    )
+    parser.add_argument(
+        "--file-name",
+        help="NFM-P findToFile fileName.",
+    )
     return parser
 
 
@@ -203,29 +411,93 @@ def main() -> int:
 
     try:
         utility = NFMPEvidenceCaptureUtility(output_dir=args.output_dir)
-        result = utility.capture_raw_response(
-            endpoint=args.endpoint,
-            instance_names=args.instance_name,
-            xml_class=args.xml_class,
-            auth_config={
-                "username": args.username,
-                "password": args.password,
-                "verify_ssl": args.verify_ssl,
-            },
-        )
+
+        auth_config = {
+            "username": args.username,
+            "password": args.password,
+            "verify_ssl": args.verify_ssl,
+        }
+
+        if args.operation == "findToFile":
+            required = {
+                "--monitored-object-pointer": (
+                    args.monitored_object_pointer
+                ),
+                "--time-captured-first": (
+                    args.time_captured_first
+                ),
+                "--time-captured-second": (
+                    args.time_captured_second
+                ),
+                "--file-name": args.file_name,
+            }
+
+            missing = [
+                name
+                for name, value in required.items()
+                if not value
+            ]
+
+            if missing:
+                parser.error(
+                    "findToFile requires: "
+                    + ", ".join(missing)
+                )
+
+            result = utility.capture_historical_response(
+                endpoint=args.endpoint,
+                monitored_object_pointer=(
+                    args.monitored_object_pointer
+                ),
+                time_captured_first=(
+                    args.time_captured_first
+                ),
+                time_captured_second=(
+                    args.time_captured_second
+                ),
+                file_name=args.file_name,
+                xml_class=(
+                    args.xml_class
+                    if args.xml_class != "bgp.PeerStats"
+                    else "equipment.InterfaceAdditionalStatsLogRecord"
+                ),
+                auth_config=auth_config,
+            )
+        else:
+            result = utility.capture_raw_response(
+                endpoint=args.endpoint,
+                instance_names=args.instance_name,
+                xml_class=args.xml_class,
+                auth_config=auth_config,
+            )
     except Exception as exc:  # pragma: no cover - CLI surface only
         parser.exit(status=1, message=f"capture failed: {exc}\n")
 
-    print(json.dumps({
+    output = {
         "source": result["source"],
         "class": result["class"],
         "operation": result["operation"],
         "capture_timestamp_utc": result["capture_timestamp_utc"],
-        "instanceNames": result["instanceNames"],
         "evidence_status": result["evidence_status"],
         "response_path": result["response_path"],
         "metadata_path": result["metadata_path"],
-    }, indent=2, sort_keys=True))
+    }
+
+    if "instanceNames" in result:
+        output["instanceNames"] = result["instanceNames"]
+
+    if "monitoredObjectPointer" in result:
+        output["monitoredObjectPointer"] = (
+            result["monitoredObjectPointer"]
+        )
+
+    if "timeCaptured" in result:
+        output["timeCaptured"] = result["timeCaptured"]
+
+    if "fileName" in result:
+        output["fileName"] = result["fileName"]
+
+    print(json.dumps(output, indent=2, sort_keys=True))
     return 0
 
 

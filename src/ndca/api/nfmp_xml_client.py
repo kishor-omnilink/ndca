@@ -29,6 +29,10 @@ class NFMPXmlClient:
         "equipment.InterfaceAdditionalStats",
     }
 
+    _HISTORICAL_DATA_CLASSES = {
+        "equipment.InterfaceAdditionalStatsLogRecord",
+    }
+
     def __init__(self, transport: Any | None = None) -> None:
         self.logger = get_logger(__name__)
         self.transport = transport
@@ -191,8 +195,54 @@ class NFMPXmlClient:
         raise NotImplementedError("NFMPXmlClient.register_log_to_file is intentionally not implemented in this task")
 
     def find_to_file(self, query: dict[str, Any]) -> dict[str, Any]:
-        """Find statistics and write to file (occasional retrieval).
+        """Execute a historical findToFile request through the injected transport.
 
-        Skeleton only — NotImplemented.
+        The historical response is intentionally returned as raw XML evidence.
+        No historical field mapping or PerformanceRecord conversion is performed
+        until the actual NFM-P response structure has been captured and verified.
         """
-        raise NotImplementedError("NFMPXmlClient.find_to_file is intentionally not implemented in this task")
+        full_class_name = str(query.get("full_class_name", "")).strip()
+
+        if full_class_name not in self._HISTORICAL_DATA_CLASSES:
+            raise ValueError(
+                "Unsupported historical XML class: "
+                f"{full_class_name}. "
+                "Allowed classes: "
+                + ", ".join(sorted(self._HISTORICAL_DATA_CLASSES))
+            )
+
+        request_xml = self.build_find_to_file_request(query)
+
+        self.logger.info(
+            "generic findToFile prepared",
+            operation="findToFile",
+            full_class_name=full_class_name,
+            monitored_object_pointer=query.get("monitored_object_pointer"),
+            file_name=query.get("file_name"),
+            request_xml=request_xml,
+        )
+
+        if self.transport is None:
+            raise NotImplementedError(
+                "NFMPXmlClient.find_to_file requires a mock or "
+                "transport implementation in offline tests"
+            )
+
+        raw_response = self.transport(request_xml)
+
+        if not isinstance(raw_response, str):
+            raise ValueError(
+                "findToFile transport must return XML as a string"
+            )
+
+        return {
+            "operation": "findToFile",
+            "full_class_name": full_class_name,
+            "monitored_object_pointer": query.get(
+                "monitored_object_pointer"
+            ),
+            "time_captured": query.get("time_captured"),
+            "file_name": query.get("file_name"),
+            "request_xml": request_xml,
+            "raw_xml": raw_response,
+        }
