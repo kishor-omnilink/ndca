@@ -510,6 +510,25 @@ The collector should include proper handling for:
 
 ---
 
+### SYNC-012-D.1 Evidence Boundary
+
+The current evidence establishes:
+
+- `equipment.InterfaceAdditionalStats` as a verified current-data class.
+- Generic `findToFile` as a documented historical retrieval operation.
+- A reusable `findToFile` request-construction implementation with validation and XML escaping.
+- Passing D.8/performance collector tests and SYNC-012-A API discovery tests.
+
+The current evidence does **not** establish:
+
+- The exact historical Interface Additional LogRecord class.
+- The historical LogRecord attributes.
+- The exact historical XML response structure.
+- The historical response-to-`PerformanceRecord` mapping.
+
+Therefore no historical Interface Additional collector or persistence implementation is authorized until authoritative evidence closes the gap.
+
+
 # 13. Current Project State
 
 | Workstream | State | Assessment |
@@ -537,54 +556,172 @@ The collector should include proper handling for:
 
 ## 13.1 SYNC-012 Milestone State
 
-| Milestone | State | Current position |
-|---|---|---|
-| SYNC-012-A — NFM-P Performance API Discovery | **COMPLETE** | Performance API discovery and evidence baseline established |
-| SYNC-012-B.2 — NFM-P Interface Current Data | **COMPLETE** | `equipment.InterfaceStats` and `equipment.InterfaceAdditionalStats` current-data support established |
-| SYNC-012-B.3 — Kafka BGP Performance Collector | **COMPLETE / CLOSED** | BGP performance collector and evidence acceptance completed |
-| SYNC-012-C — Final Evidence Reconciliation / Acceptance | **COMPLETE / CLOSED** | Final evidence reconciliation completed |
-| SYNC-012-D.1 — Interface Additional Historical Evidence Gap | **OPEN** | Historical LogRecord contract remains unverified |
-| D.8 — Generic `findToFile` Foundation | **IMPLEMENTED / VERIFIED** | Generic request construction implemented and validated; no historical class inferred |
+The current SYNC-012 milestone position is:
+
+```text
+SYNC-012-A  COMPLETE
+     ↓
+SYNC-012-B.2 COMPLETE
+     ↓
+SYNC-012-B.3 COMPLETE / CLOSED
+     ↓
+SYNC-012-C   COMPLETE / CLOSED
+     ↓
+SYNC-012-D.1 IN PROGRESS
+     │
+     ├── D.1.1 Evidence reconciliation: COMPLETE
+     ├── D.1.2 Historical XML parser: COMPLETE
+     ├── D.1.3 Historical normalization: NEXT
+     ├── Historical persistence: PENDING
+     └── Live historical collection: PENDING
+```
 
 ### SYNC-012-D.1 Evidence Boundary
 
-The current evidence establishes:
+Current verified foundation:
 
-- `equipment.InterfaceAdditionalStats` as a verified current-data class.
-- Generic `findToFile` as a documented historical retrieval operation.
-- A reusable `findToFile` request-construction implementation with validation and XML escaping.
-- Passing D.8/performance collector tests and SYNC-012-A API discovery tests.
+* `equipment.InterfaceAdditionalStats`: VERIFIED for CurrentData
+* Generic `findToFile`: VERIFIED
+* `findToFile` request builder: IMPLEMENTED / TESTED
+* `equipment.InterfaceAdditionalStatsLogRecord`: VERIFIED at the captured XML evidence boundary
+* Historical metadata fields: VERIFIED at the captured XML evidence boundary
+* Historical Interface Additional metric source names: VERIFIED at the captured XML evidence boundary
+* Historical raw XML parser: IMPLEMENTED / TESTED
+* Multiple historical LogRecords: VERIFIED
+* Required historical record validation: VERIFIED
 
-The current evidence does **not** establish:
+D.1.2 validation:
 
-- The exact historical Interface Additional LogRecord class.
-- The historical LogRecord attributes.
-- The exact historical XML response structure.
-- The historical response-to-`PerformanceRecord` mapping.
+```text
+tests/test_sync_012_b_performance_collector_impl.py
+26 passed
+```
 
-Therefore no historical Interface Additional collector or persistence implementation is authorized until authoritative evidence closes the gap.
+Previously established regression validation:
+
+```text
+SYNC-012-B.2       10 passed
+SYNC-012-B.3        7 passed
+SYNC-012-B.3 evidence
+                    7 passed
+```
+
+### Historical Parser Boundary
+
+The historical parser establishes the raw representation:
+
+```text
+NFM-P findToFileResponse
+        ↓
+equipment.InterfaceAdditionalStatsLogRecord
+        ↓
+raw historical record
+        ↓
+exact Nokia source field names preserved
+```
+
+The parser does not perform:
+
+* metric normalization
+* `PerformanceRecord` construction
+* database persistence
+* live historical collection
+
+### D.1.3 Next Boundary
+
+The next implementation stage is:
+
+**SYNC-012-D.1.3 — Historical Interface Additional Normalization**
+
+D.1.3 must establish an explicit, tested mapping from the verified Nokia historical source fields to the NDCA `PerformanceRecord` contract.
+
+The mapping must explicitly define:
+
+* metric names
+* metric semantics
+* timestamp handling
+* object identity
+* counter versus periodic-counter handling
+* validation rules
+
+No source field should be silently renamed or discarded at the raw parsing boundary.
+
+### Current SYNC-012-D.1 Status
+
+**D.1.1 — COMPLETE**
+
+**D.1.2 — COMPLETE**
+
+**D.1.3 — NEXT**
+
+**D.1 overall — IN PROGRESS**
+
+Historical persistence and live end-to-end NFM-P historical retrieval remain pending.
 
 # 14. Outstanding Work
 
 The following work should be treated as the next major project activities.
 
-## A. SYNC-012-D.1 — Interface Additional Historical Evidence Gap
+## A. SYNC-012-D.1 — Interface Additional Historical Performance
 
-The immediate active task is to verify the authoritative historical/LogRecord contract for:
+### Current Status
+
+**IN PROGRESS — D.1.2 COMPLETE; D.1.3 NEXT**
+
+### Completed
+
+* Historical Interface Additional evidence boundary reconciled.
+* `equipment.InterfaceAdditionalStatsLogRecord` verified at the captured XML evidence boundary.
+* Historical XML structure established.
+* Historical metadata fields established.
+* Historical Interface Additional metric source names established.
+* Namespace-safe historical parser implemented.
+* Multiple historical records supported.
+* Required historical identity/time validation implemented.
+* D.8 `findToFile` foundation reused.
+* D.1.2 implementation tests completed successfully.
+
+### Validation
 
 ```text
-equipment.InterfaceAdditionalStats
+D.1.2 implementation:
+26 passed
+
+B.2 regression:
+10 passed
+
+B.3 regression:
+7 passed
+
+B.3 evidence regression:
+7 passed
+
+git diff --check:
+PASS
 ```
 
-The evidence-first gate remains:
+### Remaining
 
-- Do not infer `equipment.InterfaceAdditionalStatsLogRecord` from naming similarity.
-- Do not infer historical attributes from the CurrentData class.
-- Do not implement historical response parsing until the response structure is verified.
-- Do not map historical fields into NDCA `PerformanceRecord` until field semantics are verified.
-- Do not implement historical persistence until the historical contract is established.
+1. D.1.3 historical source-to-`PerformanceRecord` normalization.
+2. Explicit timestamp semantics.
+3. Explicit counter/periodic-counter semantics.
+4. Historical object identity mapping.
+5. Normalized-record regression tests.
+6. Live NFM-P historical collection validation.
+7. Historical persistence validation.
+8. End-to-end historical performance pipeline validation.
 
-The generic `findToFile` request-construction foundation is already implemented and tested, so the remaining D.1 blocker is the authoritative Nokia historical data contract rather than the generic request mechanism.
+### Evidence Rule
+
+The D.1.2 parser contract is verified against captured repository XML evidence.
+
+This does not constitute live NFM-P end-to-end validation.
+
+OEM-document provenance must not be claimed beyond the evidence actually preserved in the repository.
+
+### Next Deliverable
+
+**SYNC-012-D.1.3 — Historical Interface Additional normalization into the NDCA `PerformanceRecord` contract.**
 
 ## B. API Capability Matrix
 

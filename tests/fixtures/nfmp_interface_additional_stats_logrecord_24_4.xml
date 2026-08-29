@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<findToFileResponse xmlns="xmlapi_1.0">
+  <equipment.InterfaceAdditionalStatsLogRecord>
+    <monitoredObjectClass>equipment.Interface</monitoredObjectClass>
+    <monitoredObjectPointer>network:example:port-3</monitoredObjectPointer>
+    <displayedName>port-3</displayedName>
+    <monitoredObjectSiteId>site-1</monitoredObjectSiteId>
+    <monitoredObjectSiteName>Example Site</monitoredObjectSiteName>
+    <timeCaptured>1127878285113</timeCaptured>
+    <periodicTime>938610</periodicTime>
+    <suspect>false</suspect>
+    <objectFullName>network:example:port-3</objectFullName>
+    <name>port-3</name>
+    <createdOnPollType>periodic</createdOnPollType>
+    <updatedOnPollType>periodic</updatedOnPollType>
+    <recordId>1001</recordId>
+    <bucketId>1</bucketId>
+    <deploymentState>DEPLOYED</deploymentState>
+    <receivedTotalOctets>100000</receivedTotalOctets>
+    <receivedTotalOctetsPeriodic>1000</receivedTotalOctetsPeriodic>
+    <receivedUnicastPackets>2000</receivedUnicastPackets>
+    <receivedUnicastPacketsPeriodic>20</receivedUnicastPacketsPeriodic>
+    <receivedMulticastPackets>300</receivedMulticastPackets>
+    <receivedMulticastPacketsPeriodic>3</receivedMulticastPacketsPeriodic>
+    <receivedBroadcastPackets>400</receivedBroadcastPackets>
+    <receivedBroadcastPacketsPeriodic>4</receivedBroadcastPacketsPeriodic>
+    <transmittedTotalOctets>200000</transmittedTotalOctets>
+    <transmittedTotalOctetsPeriodic>2000</transmittedTotalOctetsPeriodic>
+    <transmittedUnicastPackets>4000</transmittedUnicastPackets>
+    <transmittedUnicastPacketsPeriodic>40</transmittedUnicastPacketsPeriodic>
+    <transmittedMulticastPackets>500</transmittedMulticastPackets>
+    <transmittedMulticastPacketsPeriodic>5</transmittedMulticastPacketsPeriodic>
+    <transmittedBroadcastPackets>600</transmittedBroadcastPackets>
+    <transmittedBroadcastPacketsPeriodic>6</transmittedBroadcastPacketsPeriodic>
+    <children-Set/>
+  </equipment.InterfaceAdditionalStatsLogRecord>
+</findToFileResponse>

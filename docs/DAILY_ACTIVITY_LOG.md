@@ -610,3 +610,173 @@ mapping remain UNKNOWN/OPEN.
 2. Verify the exact historical/LogRecord contract from authoritative Nokia evidence.
 3. Do not implement historical Interface Additional processing until the evidence gate is satisfied.
 4. Preserve previously completed SYNC-012-B.3 Kafka BGP collector as CLOSED.
+
+## 2026-08-29 — SYNC-012-D.1.2 Historical Interface Additional Parser Closure
+
+### Repository / Branch
+
+* Repository: `/opt/ndca/repo`
+* Branch: `feature/sync-012-b-performance-collector`
+* HEAD: `ab60769` — `feat(sync-012-b): add historical performance evidence capture`
+* Remote branch is synchronized with HEAD.
+* No rebase, force-push, or Git history rewrite was performed.
+
+### D.1.2 Objective
+
+Completed the SYNC-012-D.1.2 historical Interface Additional XML parsing boundary.
+
+The implementation establishes the raw historical parsing contract for:
+
+```text
+equipment.InterfaceAdditionalStatsLogRecord
+```
+
+associated with the NFM-P:
+
+```text
+findToFileResponse
+```
+
+historical performance retrieval path.
+
+### Completed
+
+* Established namespace-safe recognition of:
+
+  * `equipment.InterfaceAdditionalStatsLogRecord`
+* Implemented historical `findToFile` response parsing.
+* Preserved the complete Nokia dotted XML class name.
+* Preserved Nokia source metric names without silent normalization.
+* Preserved historical metadata fields.
+* Added validation for required:
+
+  * `monitoredObjectPointer`
+  * `timeCaptured`
+* Added support for multiple historical LogRecord elements.
+* Added malformed/empty XML validation.
+* Reused the existing D.8 `findToFile` request foundation.
+* Added the Interface Additional historical XML fixture:
+
+  * `tests/fixtures/nfmp_interface_additional_stats_logrecord_24_4.xml`
+* Extended the existing implementation test suite for the D.1.2 contract.
+
+### Verified Historical Source Fields
+
+The captured test evidence establishes the following Interface Additional source metric names:
+
+```text
+receivedTotalOctets
+receivedTotalOctetsPeriodic
+receivedUnicastPackets
+receivedUnicastPacketsPeriodic
+receivedMulticastPackets
+receivedMulticastPacketsPeriodic
+receivedBroadcastPackets
+receivedBroadcastPacketsPeriodic
+transmittedTotalOctets
+transmittedTotalOctetsPeriodic
+transmittedUnicastPackets
+transmittedUnicastPacketsPeriodic
+transmittedMulticastPackets
+transmittedMulticastPacketsPeriodic
+transmittedBroadcastPackets
+transmittedBroadcastPacketsPeriodic
+```
+
+These names are preserved at the raw parsing boundary.
+
+No `PerformanceRecord` normalization is performed by D.1.2.
+
+### Validation Evidence
+
+D.1.2 implementation suite:
+
+```text
+pytest -q tests/test_sync_012_b_performance_collector_impl.py
+
+26 passed
+```
+
+Additional regression validation previously completed during this work:
+
+```text
+SYNC-012-B.2:
+10 passed
+
+SYNC-012-B.3:
+7 passed
+
+SYNC-012-B.3 evidence:
+7 passed
+```
+
+Python compilation passed for the modified implementation and test files.
+
+`git diff --check` passed.
+
+### Evidence Boundary
+
+The historical parser is verified against the repository-maintained NFM-P XML fixture.
+
+This establishes the parser contract at the captured XML evidence boundary.
+
+It does not by itself establish successful live NFM-P historical collection.
+
+Live end-to-end historical retrieval remains a separate validation item.
+
+The fixture is not represented as a live production capture.
+
+### Generated Evidence Handling
+
+The following generated BGP evidence artifacts were observed in the worktree:
+
+```text
+docs/sync/evidence/bgp_PeerStats_20260829T054134Z.*
+docs/sync/evidence/bgp_PeerStats_20260829T055535Z.*
+```
+
+These belong to the existing BGP evidence workflow and are not part of the D.1.2 parser implementation.
+
+They must not be accidentally included in the D.1.2 implementation commit.
+
+The generated:
+
+```text
+docs/sync/evidence/test-output/metadata.json
+```
+
+is also kept outside the D.1.2 implementation commit unless separately justified by the evidence workflow.
+
+### D.1.2 Status
+
+```text
+SYNC-012-D.1.1   COMPLETE
+SYNC-012-D.1.2   COMPLETE
+SYNC-012-D.1.3   NEXT
+```
+
+D.1.2 closes the raw historical Interface Additional XML parsing boundary.
+
+D.1 overall remains open because historical normalization, persistence and live end-to-end historical collection have not yet been completed.
+
+### Next Action
+
+Proceed to:
+
+```text
+SYNC-012-D.1.3
+Historical Interface Additional LogRecord
+        ↓
+NDCA PerformanceRecord normalization
+```
+
+D.1.3 must explicitly define:
+
+* source-to-NDCA metric mapping
+* timestamp semantics
+* object identity
+* counter versus periodic-counter semantics
+* normalized `PerformanceRecord` construction
+* validation and regression tests
+
+No normalization should be introduced implicitly into the D.1.2 raw parser.
