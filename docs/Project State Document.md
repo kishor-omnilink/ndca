@@ -571,7 +571,7 @@ SYNC-012-D.1 IN PROGRESS
      │
      ├── D.1.1 Evidence reconciliation: COMPLETE
      ├── D.1.2 Historical XML parser: COMPLETE
-     ├── D.1.3 Historical normalization: NEXT
+     ├── D.1.3 Historical normalization: COMPLETE
      ├── Historical persistence: PENDING
      └── Live historical collection: PENDING
 ```
@@ -652,7 +652,7 @@ No source field should be silently renamed or discarded at the raw parsing bound
 
 **D.1.2 — COMPLETE**
 
-**D.1.3 — NEXT**
+**D.1.3 — COMPLETE**
 
 **D.1 overall — IN PROGRESS**
 
@@ -666,7 +666,7 @@ The following work should be treated as the next major project activities.
 
 ### Current Status
 
-**IN PROGRESS — D.1.2 COMPLETE; D.1.3 NEXT**
+**IN PROGRESS — D.1.3 COMPLETE; historical persistence and live collection PENDING**
 
 ### Completed
 
@@ -702,14 +702,9 @@ PASS
 
 ### Remaining
 
-1. D.1.3 historical source-to-`PerformanceRecord` normalization.
-2. Explicit timestamp semantics.
-3. Explicit counter/periodic-counter semantics.
-4. Historical object identity mapping.
-5. Normalized-record regression tests.
-6. Live NFM-P historical collection validation.
-7. Historical persistence validation.
-8. End-to-end historical performance pipeline validation.
+1. Live NFM-P historical collection validation.
+2. Historical persistence validation.
+3. End-to-end historical performance pipeline validation.
 
 ### Evidence Rule
 
@@ -721,7 +716,7 @@ OEM-document provenance must not be claimed beyond the evidence actually preserv
 
 ### Next Deliverable
 
-**SYNC-012-D.1.3 — Historical Interface Additional normalization into the NDCA `PerformanceRecord` contract.**
+**SYNC-012-D.1.3 — COMPLETE — Historical Interface Additional normalization into the NDCA `PerformanceRecord` contract.**
 
 ## B. API Capability Matrix
 

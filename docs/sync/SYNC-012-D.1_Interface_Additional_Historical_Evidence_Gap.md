@@ -561,6 +561,8 @@ The historical parser implementation is therefore considered **verified at the c
 
 D.1.2 closes the historical Interface Additional **raw parsing contract**.
 
+D.1.3 closes the evidence-backed historical Interface Additional **normalization contract** for the currently verified metric mapping.
+
 It does not close the complete historical performance pipeline.
 
 Current milestone position:
@@ -573,7 +575,7 @@ D.1.2 — Historical XML parser contract
     COMPLETE
 
 D.1.3 — Historical → PerformanceRecord normalization
-    NEXT
+    COMPLETE
 
 Historical persistence
     PENDING
@@ -586,6 +588,8 @@ Therefore:
 
 **D.1.2 = COMPLETE**
 
+**D.1.3 = COMPLETE**
+
 **D.1 overall = NOT YET COMPLETE**
 
-The next authorized implementation boundary is D.1.3 normalization.
+Historical persistence and live end-to-end NFM-P historical collection remain pending.
